@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2"
+    android:padding="10dp"
     tools:context="com.nicklasoxhammar.cartchecking.Activities.MainActivity">
 
     <RelativeLayout
@@ -36,16 +37,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="sign out"
+        android:text="Sign out"
+        android:textAllCaps="false"
         android:onClick="signOut"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="startAddResidentActivity"
+            android:textAllCaps="false"
+            android:text="Add resident" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:text="scan"
+        android:text="Scan"
+        android:textAllCaps="false"
         android:onClick="startBarcodeScanActivity"/>
     </RelativeLayout>
 

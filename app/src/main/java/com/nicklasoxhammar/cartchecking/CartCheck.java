@@ -1,7 +1,6 @@
 package com.nicklasoxhammar.cartchecking;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Nick on 2018-04-23.
@@ -9,14 +8,16 @@ import java.util.Date;
 
 public class CartCheck {
 
-    Date date;
+    String date;
     String comment;
 
     Boolean correctlyRecycled;
 
     ArrayList<String> nonRecyclables;
 
-    CartCheck(Date date, String comment, ArrayList<String> nonRecyclables, Boolean correctlyRecycled){
+    CartCheck(){}
+
+    public CartCheck(String date, String comment, ArrayList<String> nonRecyclables, Boolean correctlyRecycled){
 
         this.date = date;
         this.comment = comment;
@@ -25,11 +26,11 @@ public class CartCheck {
 
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

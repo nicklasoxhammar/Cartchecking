@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         invalidCharacters.add("]");
 
         TextView textView = findViewById(R.id.userTextView);
-        textView.setText("Hello there " + currentUser.getEmail());
+        textView.setText("You are signed in on: " + currentUser.getEmail());
 
 
         database = FirebaseDatabase.getInstance().getReference();
@@ -148,6 +148,14 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.startActivity(myIntent);
 
         finish();
+    }
+
+    public void startAddResidentActivity(View view){
+
+        Intent myIntent = new Intent(MainActivity.this, AddResidentActivity.class);
+        MainActivity.this.startActivity(myIntent);
+
+
     }
 
 

@@ -1,33 +1,43 @@
 package com.nicklasoxhammar.cartchecking.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.nicklasoxhammar.cartchecking.Adapters.NonRecyclablesAdapter;
+import com.nicklasoxhammar.cartchecking.CartCheck;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
-import com.nicklasoxhammar.cartchecking.SendMailTask;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class IdScannedActivity extends AppCompatActivity {
 
-    LinearLayoutManager mLayoutManager;
+    /*LinearLayoutManager mLayoutManager;
     RecyclerView nonRecyclablesRecyclerView;
-    RecyclerView.Adapter mAdapter;
+    RecyclerView.Adapter mAdapter;*/
+
     ArrayList<String> nonRecyclables;
 
+    ArrayList<CheckBox> nonRecyclableCheckBoxList;
+
+    CheckBox correctlyRecycledCheckBox;
+
     TextView textView;
+    EditText commentTextView;
+
+    Boolean correctlyRecycled;
 
     DatabaseReference database;
 
@@ -39,9 +49,13 @@ public class IdScannedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_id_scanned);
 
+        nonRecyclableCheckBoxList = new ArrayList<>();
+        setupCheckBoxList();
+
         database = FirebaseDatabase.getInstance().getReference();
 
         textView = findViewById(R.id.id_scanned_text_view);
+        commentTextView = findViewById(R.id.comment_text_view);
 
         Bundle extras = getIntent().getExtras();
 
@@ -54,7 +68,7 @@ public class IdScannedActivity extends AppCompatActivity {
         }
 
 
-        fillNonRecyclablesList();
+       // fillNonRecyclablesList();
     }
 
     public void getResidentFromDatabase() {
@@ -64,7 +78,7 @@ public class IdScannedActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resident = (Resident) dataSnapshot.getValue(Resident.class);
 
-                textView.setText("This cart belongs to " + resident.getFirstName() + " " + resident.getLastName() + " at " + resident.getAddress());
+                textView.setText("This cart belongs to " + resident.getFirstName() + " " + resident.getLastName() + " at " + resident.getAddress().getStreetName() + " " + resident.getAddress().getStreetNumber());
 
             }
 
@@ -76,7 +90,53 @@ public class IdScannedActivity extends AppCompatActivity {
 
     }
 
-    public void fillNonRecyclablesList() {
+    public void setupCheckBoxList(){
+
+        correctlyRecycledCheckBox = findViewById(R.id.correctlyRecycledCheckBox);
+        nonRecyclableCheckBoxList.add(correctlyRecycledCheckBox);
+
+        CheckBox garbageCheckBox = findViewById(R.id.garbageCheckBox);
+        nonRecyclableCheckBoxList.add(garbageCheckBox);
+
+        CheckBox plasticBagCheckBox = findViewById(R.id.plasticBagCheckBox);
+        nonRecyclableCheckBoxList.add(plasticBagCheckBox);
+
+        CheckBox foodCheckBox = findViewById(R.id.foodCheckBox);
+        nonRecyclableCheckBoxList.add(foodCheckBox);
+
+        CheckBox clothingCheckBox = findViewById(R.id.clothingCheckBox);
+        nonRecyclableCheckBoxList.add(clothingCheckBox);
+
+        CheckBox tanglerCheckBox = findViewById(R.id.tanglerCheckBox);
+        nonRecyclableCheckBoxList.add(tanglerCheckBox);
+
+        CheckBox bigItemCheckBox = findViewById(R.id.bigItemCheckBox);
+        nonRecyclableCheckBoxList.add(bigItemCheckBox);
+
+        CheckBox recyclablesInTrashCheckBox = findViewById(R.id.recyclablesInTrashCheckBox);
+        nonRecyclableCheckBoxList.add(recyclablesInTrashCheckBox);
+
+        for (CheckBox c : nonRecyclableCheckBoxList){
+            c.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (view.getTag() != null){
+
+                        for (CheckBox b : nonRecyclableCheckBoxList) {
+                            if (b.getTag() == null) {
+                                b.setChecked(false);
+                            }
+
+                        }
+                    } else {
+                        correctlyRecycledCheckBox.setChecked(false);
+                    }
+                }
+            });
+        }
+    }
+
+   /* public void fillNonRecyclablesList() {
 
         nonRecyclables = new ArrayList<String>();
 
@@ -89,13 +149,13 @@ public class IdScannedActivity extends AppCompatActivity {
         nonRecyclables.add("Recyclables in trash");
 
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new NonRecyclablesAdapter(this, mLayoutManager, nonRecyclables);
+        mAdapter = new NonRecyclablesAdapter(this, mLayoutManager, nonRecyclables).g;
 
         nonRecyclablesRecyclerView = findViewById(R.id.non_recyclables_recycler_view);
         nonRecyclablesRecyclerView.setLayoutManager(mLayoutManager);
         nonRecyclablesRecyclerView.setAdapter(mAdapter);
 
-    }
+    }*/
 
    /* protected void sendEmail(View view) {
 
@@ -107,6 +167,49 @@ public class IdScannedActivity extends AppCompatActivity {
     }*/
 
    public void Report(View view){
+
+       Boolean isSomethingChecked = false;
+
+       nonRecyclables = new ArrayList<>();
+
+       for (CheckBox c : nonRecyclableCheckBoxList){
+           if (c.isChecked()){
+               nonRecyclables.add(c.getText().toString());
+               isSomethingChecked = true;
+           }
+       }
+
+       if (correctlyRecycledCheckBox.isChecked()){
+           correctlyRecycled = true;
+           isSomethingChecked = true;
+       }else{
+           correctlyRecycled = false;
+       }
+
+       if (isSomethingChecked == false){
+           Toast.makeText(this,"Please use the checkboxes!", Toast.LENGTH_SHORT).show();
+           return;
+       }
+
+       CartCheck cartCheck = new CartCheck(Calendar.getInstance().getTime().toString(), commentTextView.getText().toString(), nonRecyclables, correctlyRecycled);
+
+       //resident.addCartCheck(cartCheck);
+
+       try {
+           database.child("residents").child(residentId).child("cartChecks").push().setValue(cartCheck);
+           Toast.makeText(this, "Report successfully added to database!", Toast.LENGTH_SHORT).show();
+
+       }catch (Exception e){
+           Log.d("Exception", "Report: " + e);
+
+           Toast.makeText(this, "Report failed, please try again!", Toast.LENGTH_SHORT).show();
+       }
+
+       //Start MainActivity
+       Intent myIntent = new Intent(IdScannedActivity.this, MainActivity.class);
+       IdScannedActivity.this.startActivity(myIntent);
+
+       finish();
 
    }
 

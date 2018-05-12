@@ -1,45 +1,39 @@
 package com.nicklasoxhammar.cartchecking;
 
-import android.location.Address;
-import android.provider.ContactsContract;
-
-import com.google.android.gms.vision.barcode.Barcode;
-
-import java.util.ArrayList;
-
 /**
  * Created by Nick on 2018-04-23.
  */
 
 public class Resident {
 
-    String residentId;
+    //String residentId;
 
     String firstName;
     String lastName;
-    String email;
-    String address;
+    //String email;
+    ResidentAddress address;
 
-    ArrayList<CartCheck> cartChecks;
+   // ArrayList<CartCheck> cartChecks;
 
     public Resident(){}
 
-    public Resident(String residentId, String firstName, String lastName, String email, String address){
+    public Resident(String firstName, String lastName, ResidentAddress address){
 
-        this.residentId = residentId;
+        //this.residentId = residentId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        //this.email = email;
         this.address = address;
+        //this.cartChecks = cartChecks;
     }
 
-    public String getResidentId() {
+    /*public String getResidentId() {
         return residentId;
     }
 
     public void setResidentId(String residentId) {
         this.residentId = residentId;
-    }
+    }*/
 
     public String getFirstName() {
         return firstName;
@@ -57,20 +51,25 @@ public class Resident {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
+    public ResidentAddress getAddress() {
+
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(ResidentAddress address) {
         this.address = address;
     }
 
-    public ArrayList<CartCheck> getCartChecks() {
+   /* public ArrayList<CartCheck> getCartChecks() {
         return cartChecks;
     }
 
     public void setCartChecks(ArrayList<CartCheck> cartChecks) {
         this.cartChecks = cartChecks;
+    }
+
+    public void addCartCheck(CartCheck cartCheck){
+        cartChecks.add(cartCheck);
     }
 
     public String getEmail() {
@@ -79,6 +78,6 @@ public class Resident {
 
     public void setEmail(String email) {
         this.email = email;
-    }
+    }*/
 
 }

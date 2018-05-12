@@ -13,40 +13,122 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="10dp"
+        android:focusableInTouchMode="true"
         >
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Report"
-            android:onClick="Report"/>
     <TextView
         android:id="@+id/id_scanned_text_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
        />
+
+        <EditText
+            android:padding="5dp"
+            android:id="@+id/comment_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="top"
+            android:hint="Write comment here"
+            android:layout_below="@+id/id_scanned_text_view"
+            android:layout_above="@+id/textView"
+            android:inputType="textMultiLine"
+            android:background="@color/colorBackground"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:paddingTop="10dp"
 
             android:text="Select non recyclables found in cart:"
-            />
+            android:id="@+id/textView" />
+
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <!--<android.support.v7.widget.RecyclerView
         android:id="@+id/non_recyclables_recycler_view"
         android:scrollbars="vertical"
         android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
-
-
         android:background="@color/colorBackground"
-        />
+        />-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="3">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/correctlyRecycledCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="None, Everything is correctly recycled!"
+            android:layout_marginBottom="10dp"
+            android:tag="correctlyRecycled"
+            />
+
+        <CheckBox
+            android:id="@+id/garbageCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bagged recyclables/garbage"
+            />
+
+        <CheckBox
+            android:id="@+id/plasticBagCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Plastic bag"
+            />
+        <CheckBox
+            android:id="@+id/foodCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Food or liquid"
+            />
+        <CheckBox
+            android:id="@+id/clothingCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clothing or linen"
+            />
+        <CheckBox
+            android:id="@+id/tanglerCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tangler"
+            />
+        <CheckBox
+            android:id="@+id/bigItemCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Big item"
+            />
+        <CheckBox
+            android:id="@+id/recyclablesInTrashCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recyclables in trash cart"
+            />
+
+        </TableLayout>
+
+    </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="Report"
+        android:text="Report" />
 
 </LinearLayout>

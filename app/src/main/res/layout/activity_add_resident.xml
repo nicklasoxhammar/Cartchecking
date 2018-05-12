@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context="com.nicklasoxhammar.cartchecking.Activities.AddResidentActivity">
+
+
+    <EditText
+        android:id="@+id/first_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="First name" />
+
+    <EditText
+        android:id="@+id/last_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/first_name_edit_text"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Last name"/>
+
+    <EditText
+        android:id="@+id/street_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/last_name_edit_text"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="Adressroad (street name)"
+        android:inputType="textPostalAddress" />
+
+    <EditText
+        android:id="@+id/street_number_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/street_name_edit_text"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="20 (street number)"
+        android:inputType="textPostalAddress" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/apartment_number_edit_text"
+        android:gravity="center"
+        android:text="(If no apartment number, leave empty)"/>
+
+    <EditText
+        android:id="@+id/apartment_number_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/street_number_edit_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="4B (apartment number)"
+        android:inputType="textPostalAddress" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:onClick="AddResidentToDatabase"
+        android:text="Add resident"
+        android:textAllCaps="false" />
+</RelativeLayout>

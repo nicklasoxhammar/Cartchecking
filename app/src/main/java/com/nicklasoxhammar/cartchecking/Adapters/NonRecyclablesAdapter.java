@@ -26,6 +26,7 @@ public class NonRecyclablesAdapter extends RecyclerView.Adapter<NonRecyclablesAd
     Context mContext;
     LinearLayoutManager llm;
     ArrayList<String> nonRecyclables;
+    ArrayList<CheckBox> checkBoxes;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -77,14 +78,30 @@ public class NonRecyclablesAdapter extends RecyclerView.Adapter<NonRecyclablesAd
         holder.nonRecyclableText.setText(nonRecyclable);
         holder.checkBox.setTag(nonRecyclable);
 
+        checkBoxes.add(holder.checkBox);
+
     }
 
 
+    public ArrayList<String> getNonRecyclablesStringList(){
 
+        ArrayList<String> nonRecyclablesStringList = new ArrayList<>();
+
+        for (CheckBox c : checkBoxes){
+            if (c.isChecked()){
+                nonRecyclablesStringList.add(c.getTag().toString());
+            }
+        }
+
+        return nonRecyclablesStringList;
+
+    }
 
     @Override
     public int getItemCount() {
         return nonRecyclables.size();
     }
+
+
 
 }
