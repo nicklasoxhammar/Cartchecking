@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -48,6 +49,8 @@ public class IdScannedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_id_scanned);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         nonRecyclableCheckBoxList = new ArrayList<>();
         setupCheckBoxList();
@@ -212,5 +215,17 @@ public class IdScannedActivity extends AppCompatActivity {
        finish();
 
    }
+
+    public boolean onOptionsItemSelected(final MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

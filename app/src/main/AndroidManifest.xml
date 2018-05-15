@@ -17,7 +17,8 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name=".Activities.MainActivity" />
+        <activity android:name=".Activities.MainActivity">
+        </activity>
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/app_name">
@@ -27,9 +28,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.BarcodeScanActivity" />
-        <activity android:name=".Activities.IdScannedActivity" />
-        <activity android:name=".Activities.AddResidentActivity"></activity>
+        <activity android:name=".Activities.BarcodeScanActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Activities.IdScannedActivity"
+            android:label="Report cart check"/>
+        <activity android:name=".Activities.AddResidentActivity"
+            android:label="Add resident">
+        </activity>
     </application>
 
 </manifest>

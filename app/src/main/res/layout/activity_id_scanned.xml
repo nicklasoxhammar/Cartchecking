@@ -129,6 +129,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:onClick="Report"
+        android:background="@drawable/button"
+        android:textAllCaps="false"
+        android:layout_marginBottom="25dp"
         android:text="Report" />
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,6 +34,8 @@ public class AddResidentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_resident);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         database = FirebaseDatabase.getInstance().getReference();
 
         addEditTexts();
@@ -46,6 +49,7 @@ public class AddResidentActivity extends AppCompatActivity {
 
             if (e.getText().toString().equals("") || e.getText().toString() == null){
                 Toast.makeText(this, "Please fill in the required fields!", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
 
@@ -90,5 +94,17 @@ public class AddResidentActivity extends AppCompatActivity {
         editTextList.add(streetNumberEditText);
 
         apartmentNumberEditText = findViewById(R.id.apartment_number_edit_text);
+    }
+
+    public boolean onOptionsItemSelected(final MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

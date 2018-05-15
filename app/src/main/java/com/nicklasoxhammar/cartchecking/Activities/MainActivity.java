@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     String qrString;
 
-    TextView codeTextView;
-
     FirebaseUser currentUser;
 
     String residentId;
@@ -50,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         currentUser = mAuth.getCurrentUser();
-
-        codeTextView = findViewById(R.id.codeTextView);
 
         invalidCharacters = new ArrayList<String>();
         invalidCharacters.add(".");

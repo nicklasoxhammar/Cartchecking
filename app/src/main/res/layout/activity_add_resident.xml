@@ -79,5 +79,7 @@
         android:layout_marginBottom="25dp"
         android:onClick="AddResidentToDatabase"
         android:text="Add resident"
+        android:background="@drawable/button"
+        android:padding="10dp"
         android:textAllCaps="false" />
 </RelativeLayout>
