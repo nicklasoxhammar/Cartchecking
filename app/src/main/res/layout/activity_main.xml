@@ -31,59 +31,59 @@
             <Button
                 android:id="@+id/scanButton"
                 android:layout_width="match_parent"
+                android:layout_above="@id/sign_out_button"
                 android:layout_height="60dp"
 
                 android:text="Scan"
                 android:textAllCaps="false"
                 android:background="@drawable/button"
                 android:onClick="startBarcodeScanActivity"
-                android:layout_marginTop="100dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="25dp" />
 
-        <GridLayout
-            android:layout_below="@id/scanButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+             <Button
+
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                 android:visibility="invisible"
+                 android:clickable="false"
+                 android:layout_alignParentBottom="true"
+                 android:layout_marginBottom="25dp"
+
+                android:text="Sign out"
+                android:id="@+id/filler_button"
+                android:background="@drawable/button"
+                android:textAllCaps="false"
+                android:onClick="signOut"/>
 
 
             <Button
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@id/filler_button"
 
                 android:text="Sign out"
                 android:id="@+id/sign_out_button"
                 android:background="@drawable/button"
                 android:textAllCaps="false"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="10dp"
-
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="25dp"
                 android:onClick="signOut"/>
 
             <Button
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_column="1"
-                android:layout_row="0"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/filler_button"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="25dp"
+                android:id="@+id/add_resident_button"
 
                 android:onClick="startAddResidentActivity"
                 android:textAllCaps="false"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="10dp"
                 android:background="@drawable/button"
                 android:text="Add resident" />
 
 
-        </GridLayout>
     <!--<Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
