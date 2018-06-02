@@ -59,6 +59,7 @@ public class AddResidentActivity extends AppCompatActivity {
 
         try {
             String residentId = database.child("residents").push().getKey();
+            resident.setResidentId(residentId);
             database.child("residents").child(residentId).setValue(resident);
             Toast.makeText(this, "Resident successfully added to database!", Toast.LENGTH_SHORT).show();
             Log.d("TAG", "ResidentId: " + residentId);

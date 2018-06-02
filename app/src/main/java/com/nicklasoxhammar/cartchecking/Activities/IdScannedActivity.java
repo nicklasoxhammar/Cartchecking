@@ -29,8 +29,6 @@ public class IdScannedActivity extends AppCompatActivity {
     RecyclerView nonRecyclablesRecyclerView;
     RecyclerView.Adapter mAdapter;*/
 
-    ArrayList<String> nonRecyclables;
-
     ArrayList<CheckBox> nonRecyclableCheckBoxList;
 
     CheckBox correctlyRecycledCheckBox;
@@ -173,7 +171,7 @@ public class IdScannedActivity extends AppCompatActivity {
 
        Boolean isSomethingChecked = false;
 
-       nonRecyclables = new ArrayList<>();
+       ArrayList<String> nonRecyclables = new ArrayList<>();
 
        for (CheckBox c : nonRecyclableCheckBoxList){
            if (c.isChecked()){

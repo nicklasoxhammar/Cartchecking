@@ -6,7 +6,7 @@ package com.nicklasoxhammar.cartchecking;
 
 public class Resident {
 
-    //String residentId;
+    String residentId;
 
     String firstName;
     String lastName;
@@ -27,13 +27,13 @@ public class Resident {
         //this.cartChecks = cartChecks;
     }
 
-    /*public String getResidentId() {
+    public String getResidentId() {
         return residentId;
     }
 
     public void setResidentId(String residentId) {
         this.residentId = residentId;
-    }*/
+    }
 
     public String getFirstName() {
         return firstName;
