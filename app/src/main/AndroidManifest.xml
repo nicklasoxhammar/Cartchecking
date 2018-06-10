@@ -36,7 +36,9 @@
         <activity
             android:name=".Activities.AddResidentActivity"
             android:label="Add resident"></activity>
-        <activity android:name=".Activities.EditResidentActivity"></activity>
+        <activity android:name=".Activities.EditResidentActivity">
+            android:label="Edit resident">
+        </activity>
     </application>
 
 </manifest>
