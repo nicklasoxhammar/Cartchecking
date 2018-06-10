@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference database;
 
-    ArrayList<String> invalidCharacters;
+    String[] invalidCharacters = {".","#","$","[","]"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +48,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         currentUser = mAuth.getCurrentUser();
-
-        invalidCharacters = new ArrayList<String>();
-        invalidCharacters.add(".");
-        invalidCharacters.add("#");
-        invalidCharacters.add("$");
-        invalidCharacters.add("[");
-        invalidCharacters.add("]");
-
         TextView textView = findViewById(R.id.userTextView);
         textView.setText("You are signed in on: " + currentUser.getEmail());
 
@@ -89,11 +81,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkId(){
 
-        Log.d(TAG, "checkId: " + residentId);
+        if(residentId.equals("")){
+            residentDoesNotExist();
+            return;
+        }
 
-        for (String s : invalidCharacters){
+        for (int i = 0; i < invalidCharacters.length; i++){
 
-            if(residentId.contains(s)){
+            if(residentId.contains(invalidCharacters[i])){
                 residentDoesNotExist();
                 return;
             }
@@ -151,6 +146,12 @@ public class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(MainActivity.this, AddResidentActivity.class);
         MainActivity.this.startActivity(myIntent);
 
+    }
+
+    public void startEditResidentActivity(View view){
+
+        Intent myIntent = new Intent(MainActivity.this, EditResidentActivity.class);
+        MainActivity.this.startActivity(myIntent);
 
     }
 

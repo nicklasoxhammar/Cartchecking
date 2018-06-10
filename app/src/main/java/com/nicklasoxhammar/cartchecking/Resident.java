@@ -1,5 +1,7 @@
 package com.nicklasoxhammar.cartchecking;
 
+import java.util.ArrayList;
+
 /**
  * Created by Nick on 2018-04-23.
  */
@@ -13,7 +15,7 @@ public class Resident {
     //String email;
     ResidentAddress address;
 
-   // ArrayList<CartCheck> cartChecks;
+    //ArrayList<CartCheck> cartChecks;
 
     public Resident(){}
 
@@ -26,6 +28,16 @@ public class Resident {
         this.address = address;
         //this.cartChecks = cartChecks;
     }
+
+    /*public Resident(String firstName, String lastName, ResidentAddress address, ArrayList<CartCheck> cartChecks){
+
+        //this.residentId = residentId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        //this.email = email;
+        this.address = address;
+        this.cartChecks = cartChecks;
+    }*/
 
     public String getResidentId() {
         return residentId;
@@ -60,7 +72,7 @@ public class Resident {
         this.address = address;
     }
 
-   /* public ArrayList<CartCheck> getCartChecks() {
+   /*public ArrayList<CartCheck> getCartChecks() {
         return cartChecks;
     }
 

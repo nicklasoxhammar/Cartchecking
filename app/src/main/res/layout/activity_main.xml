@@ -45,17 +45,16 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_centerHorizontal="true"
-                 android:visibility="invisible"
-                 android:clickable="false"
                  android:layout_alignParentBottom="true"
                  android:layout_marginBottom="25dp"
-                 android:padding="30dp"
+                 android:layout_marginLeft="20dp"
+                 android:layout_marginRight="20dp"
 
-                android:text="Sign out"
+                android:text="Edit&#10;resident"
                 android:id="@+id/filler_button"
                 android:background="@drawable/button"
                 android:textAllCaps="false"
-                android:onClick="signOut"/>
+                android:onClick="startEditResidentActivity"/>
 
 
             <Button
