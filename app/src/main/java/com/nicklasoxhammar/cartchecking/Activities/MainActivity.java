@@ -1,9 +1,13 @@
 package com.nicklasoxhammar.cartchecking.Activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser currentUser;
 
+    ProgressBar mProgressView;
+
     ArrayList<Resident> residents;
 
     String residentId;
@@ -73,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mProgressView = findViewById(R.id.search_progress);
 
         residents = new ArrayList<>();
 
@@ -193,10 +202,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void searchStreetName(View view){
 
+        view.setClickable(false);
+
         streetName = streetNameAutoCompleteTextView.getText().toString().toLowerCase();
 
         if(streetName.equals("")){
             Toast.makeText(this, "Please enter a street name!", Toast.LENGTH_SHORT).show();
+            findViewById(R.id.searchButton).setClickable(true);
             return;
         }
 
@@ -204,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(streetName.contains(invalidCharacters[i])){
                 Toast.makeText(getApplicationContext(), "Street name not in database.", Toast.LENGTH_SHORT).show();
+                findViewById(R.id.searchButton).setClickable(true);
                 return;
             }
         }
@@ -226,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     // residentId exists
 
+                    showProgress(true);
+
                     //resident = (Resident) dataSnapshot.getValue(Resident.class);
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         residents.add(ds.getValue(Resident.class));
@@ -236,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // residentId does not exist
                     Toast.makeText(getApplicationContext(), "Street name not in database.", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.searchButton).setClickable(true);
                 }
             }
 
@@ -261,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
         residentsRecyclerView.setAdapter(mAdapter);
 
+        showProgress(false);
     }
 
     public void sortResidentList(){
@@ -275,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showStreetNamePopup(){
+
 
         try {
             //get height and width of default display
@@ -306,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDismiss() {
                     backgroundPw.dismiss();
+                    findViewById(R.id.searchButton).setClickable(true);
                 }
             });
 
@@ -327,6 +346,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
 

@@ -48,6 +48,14 @@
             android:textAllCaps="false"
             android:onClick="searchStreetName"/>
 
+        <ProgressBar
+            android:id="@+id/search_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
     <RelativeLayout
