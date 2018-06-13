@@ -1,5 +1,7 @@
 package com.nicklasoxhammar.cartchecking.Activities;
 
+import android.support.v7.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -106,12 +108,7 @@ public class EditResidentActivity extends AppCompatActivity {
             Toast.makeText(this, "Update failed, please try again!", Toast.LENGTH_SHORT).show();
         }
 
-        //Start MainActivity
-        Intent myIntent = new Intent(EditResidentActivity.this, MainActivity.class);
-        EditResidentActivity.this.startActivity(myIntent);
-
-        finish();
-
+        goToMainActivity();
     }
 
     public void setupEditTexts(){
@@ -235,18 +232,7 @@ public class EditResidentActivity extends AppCompatActivity {
                         } else {
                             System.out.println("Success");
 
-                            fromPath.setValue(null, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError != null) {
-                                        System.out.println("Delete failed");
-                                    } else {
-                                        System.out.println("Success");
-
-                                }
-                            }
-
-                            });
+                           deleteObjectInDatabase(fromPath);
                     }
                     }
                 });
@@ -258,5 +244,55 @@ public class EditResidentActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void deleteObjectInDatabase(final DatabaseReference path){
+
+        path.setValue(null, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    System.out.println("Delete failed");
+                } else {
+                    System.out.println("Success");
+
+                }
+            }
+
+        });
+
+
+    }
+
+    public void removeResidentFromDatabase(View view){
+
+        AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+
+        builder.setMessage("Do you want to remove this resident from the database permanently?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        deleteObjectInDatabase(database.child("residents").child(streetNameKey).child(residentId));
+                        goToMainActivity();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        final android.support.v7.app.AlertDialog alert = builder.create();
+        alert.show();
+
+
+    }
+
+    public void goToMainActivity(){
+        Intent myIntent = new Intent(EditResidentActivity.this, MainActivity.class);
+        EditResidentActivity.this.startActivity(myIntent);
+
+        finish();
     }
 }

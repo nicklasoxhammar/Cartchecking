@@ -7,6 +7,9 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorLightGreen">#c2ff9c</color>
 
+    <color name="colorRed">#be0000</color>
+    <color name="colorLightRed">#ff5e5e</color>
+
     <!-- Background color-->
     <color name="colorBackground">#fdeeee</color>
     <color name="defaultBackgroundColor">#FAFAFA</color>

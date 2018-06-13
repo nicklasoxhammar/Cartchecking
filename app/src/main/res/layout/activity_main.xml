@@ -24,6 +24,7 @@
             android:layout_below="@+id/cameraPreview" />
 
         <android.support.v7.widget.AppCompatAutoCompleteTextView
+            android:layout_marginTop="10dp"
             android:layout_below="@+id/userTextView"
             android:id="@+id/autoCompleteStreetTextView"
             android:layout_width="match_parent"
@@ -37,6 +38,7 @@
             android:minHeight="0dp"
             android:minWidth="0dp"
             android:padding="10dp"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search"

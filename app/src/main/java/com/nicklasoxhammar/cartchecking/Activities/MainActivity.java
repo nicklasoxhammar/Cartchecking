@@ -36,6 +36,9 @@ import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -246,6 +249,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpResidentsRecyclerView(View layout){
+        sortResidentList();
+
         LinearLayoutManager mLayoutManager;
         RecyclerView residentsRecyclerView;
         ResidentsAdapter mAdapter;
@@ -256,6 +261,16 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
         residentsRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    public void sortResidentList(){
+
+        Collections.sort(residents, new Comparator<Resident>() {
+            @Override
+            public int compare(Resident r1, Resident r2) {
+            return r1.getAddress().getStreetNumberInt() - r2.getAddress().getStreetNumberInt();
+        }
+    });
 
     }
 

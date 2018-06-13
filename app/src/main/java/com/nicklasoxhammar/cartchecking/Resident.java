@@ -72,6 +72,7 @@ public class Resident {
         this.address = address;
     }
 
+
    /*public ArrayList<CartCheck> getCartChecks() {
         return cartChecks;
     }

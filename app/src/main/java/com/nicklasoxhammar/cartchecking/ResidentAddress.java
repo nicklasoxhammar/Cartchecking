@@ -40,4 +40,13 @@ public class ResidentAddress {
         return apartmentNumber;
     }
 
+    public int getStreetNumberInt(){
+
+        String streetNumberOnlyDigits = streetNumber.replaceAll("[^\\d]", "" );
+
+        int streetNumberInt = Integer.parseInt(streetNumberOnlyDigits);
+
+        return streetNumberInt;
+    }
+
 }
