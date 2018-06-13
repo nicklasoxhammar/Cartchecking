@@ -9,5 +9,8 @@
 
     <!-- Background color-->
     <color name="colorBackground">#fdeeee</color>
+    <color name="defaultBackgroundColor">#FAFAFA</color>
+
+    <color name="transparentDark">#aa000000</color>
 
 </resources>

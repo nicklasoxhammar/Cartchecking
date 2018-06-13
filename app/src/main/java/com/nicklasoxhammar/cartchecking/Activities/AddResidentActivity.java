@@ -57,10 +57,12 @@ public class AddResidentActivity extends AppCompatActivity {
 
         Resident resident = new Resident(firstNameEditText.getText().toString(), lastNameEditText.getText().toString(), address);
 
+        String streetName = streetNameEditText.getText().toString().toLowerCase();
+
         try {
-            String residentId = database.child("residents").push().getKey();
+            String residentId = database.child("residents").child(streetName).push().getKey();
             resident.setResidentId(residentId);
-            database.child("residents").child(residentId).setValue(resident);
+            database.child("residents").child(streetName).child(residentId).setValue(resident);
             Toast.makeText(this, "Resident successfully added to database!", Toast.LENGTH_SHORT).show();
             Log.d("TAG", "ResidentId: " + residentId);
 

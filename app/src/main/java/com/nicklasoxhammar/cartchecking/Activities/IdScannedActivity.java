@@ -40,6 +40,7 @@ public class IdScannedActivity extends AppCompatActivity {
 
     DatabaseReference database;
 
+    String streetNameKey;
     Resident resident;
     String residentId;
 
@@ -64,6 +65,7 @@ public class IdScannedActivity extends AppCompatActivity {
             Log.d("TAG", "onCreate: no extras=!");
         } else {
             residentId = extras.getString("residentId");
+            streetNameKey = extras.getString("streetName");
 
             getResidentFromDatabase();
         }
@@ -74,12 +76,12 @@ public class IdScannedActivity extends AppCompatActivity {
 
     public void getResidentFromDatabase() {
 
-        database.child("residents").child(residentId).addValueEventListener(new ValueEventListener() {
+        database.child("residents").child(streetNameKey).child(residentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resident = (Resident) dataSnapshot.getValue(Resident.class);
 
-                textView.setText("This cart belongs to " + resident.getFirstName() + " " + resident.getLastName() + " at " + resident.getAddress().getStreetName() + " " + resident.getAddress().getStreetNumber());
+                textView.setText("This cart belongs to " + resident.getFirstName() + " " + resident.getLastName() + " at " + resident.getAddress().getStreetNumber() + " " + resident.getAddress().getStreetName());
 
             }
 
@@ -197,7 +199,7 @@ public class IdScannedActivity extends AppCompatActivity {
        //resident.addCartCheck(cartCheck);
 
        try {
-           database.child("residents").child(residentId).child("cartChecks").push().setValue(cartCheck);
+           database.child("residents").child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
            Toast.makeText(this, "Report successfully added to database!", Toast.LENGTH_SHORT).show();
 
        }catch (Exception e){
@@ -225,5 +227,6 @@ public class IdScannedActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }

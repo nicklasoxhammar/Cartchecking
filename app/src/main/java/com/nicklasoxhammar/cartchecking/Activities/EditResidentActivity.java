@@ -30,6 +30,10 @@ public class EditResidentActivity extends AppCompatActivity {
     String residentId;
     Resident resident;
 
+    String streetNameKey;
+
+    ValueEventListener listener;
+
     RelativeLayout searchLayout;
     RelativeLayout editLayout;
 
@@ -73,9 +77,11 @@ public class EditResidentActivity extends AppCompatActivity {
 
     public void addResidentChangesToDatabase(View view){
 
+        String streetName = streetNameEditText.getText().toString();
+
         resident.setFirstName(firstNameEditText.getText().toString());
         resident.setLastName(lastNameEditText.getText().toString());
-        resident.setAddress(new ResidentAddress(streetNumberEditText.getText().toString(), streetNameEditText.getText().toString(), apartmentNumberEditText.getText().toString()));
+        resident.setAddress(new ResidentAddress(streetNumberEditText.getText().toString(), streetName, apartmentNumberEditText.getText().toString()));
 
         try {
             DatabaseReference residentRef = database.child("residents").child(residentId);
@@ -84,7 +90,13 @@ public class EditResidentActivity extends AppCompatActivity {
             residentUpdates.put("lastName", resident.getLastName());
             residentUpdates.put("address", resident.getAddress());
 
-            database.child("residents").child(residentId).updateChildren(residentUpdates);
+            //update information
+            database.child("residents").child(streetNameKey).child(residentId).updateChildren(residentUpdates);
+
+            //move in database if new street name
+            if(!streetNameKey.equals(streetName.toLowerCase())){
+                moveChildren(database.child("residents").child(streetNameKey).child(residentId), database.child("residents").child(streetName).child(residentId));
+            }
 
             Toast.makeText(this, "Update successfully added to database!", Toast.LENGTH_SHORT).show();
 
@@ -103,6 +115,7 @@ public class EditResidentActivity extends AppCompatActivity {
     }
 
     public void setupEditTexts(){
+        database.child("residents").child(streetNameKey).child(residentId).removeEventListener(listener);
 
         editTextList = new ArrayList<>();
 
@@ -141,17 +154,19 @@ public class EditResidentActivity extends AppCompatActivity {
             }
         }
 
-        database.child("residents").child(residentId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // residentId exists
-                    residentExists();
-
-                } else {
-                    // residentId does not exist
-                    residentDoesNotExist();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if(snapshot.hasChild(residentId)){
+                        streetNameKey = snapshot.getKey();
+                        residentExists();
+                        return;
+                    }
                 }
+                // residentId does not exist
+                residentDoesNotExist();
+
             }
 
             @Override
@@ -179,7 +194,7 @@ public class EditResidentActivity extends AppCompatActivity {
 
     public void getResidentFromDatabase() {
 
-        database.child("residents").child(residentId).addValueEventListener(new ValueEventListener() {
+        listener = database.child("residents").child(streetNameKey).child(residentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resident = (Resident) dataSnapshot.getValue(Resident.class);
@@ -191,6 +206,7 @@ public class EditResidentActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -204,5 +220,43 @@ public class EditResidentActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //use to move objects in firebase  !BE CAREFUL! accidentally deleted the whole database using this!
+    private void moveChildren(final DatabaseReference fromPath, final DatabaseReference toPath) {
+        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                        if (firebaseError != null) {
+                            System.out.println("Copy failed");
+                        } else {
+                            System.out.println("Success");
+
+                            fromPath.setValue(null, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        System.out.println("Delete failed");
+                                    } else {
+                                        System.out.println("Success");
+
+                                }
+                            }
+
+                            });
+                    }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
