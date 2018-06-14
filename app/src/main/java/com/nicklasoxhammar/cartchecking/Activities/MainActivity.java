@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nicklasoxhammar.cartchecking.Adapters.ResidentsAdapter;
+import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
 
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     String qrString;
+
+    RecyclerView streetsRecyclerView;
 
     FirebaseUser currentUser;
 
@@ -96,7 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance().getReference();
 
+        setupStreetsRecyclerView();
 
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
     public void startBarcodeScanActivity(View view){
@@ -293,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void showStreetNamePopup(){
 
-
         try {
             //get height and width of default display
             Display display = getWindowManager().getDefaultDisplay();
@@ -369,6 +376,47 @@ public class MainActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    public void setupStreetsRecyclerView(){
+
+        final ArrayList<String> streets = new ArrayList<>();
+
+        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    streets.add(snapshot.getKey());
+                    }
+
+                //sort alphabetically
+                Collections.sort(streets, new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        return s1.compareTo(s2);
+                    }
+                });
+
+                streetsRecyclerView = findViewById(R.id.streetsRecyclerView);
+                LinearLayoutManager mLayoutManager;
+                StreetsAdapter mAdapter;
+
+                mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                streetsRecyclerView.setLayoutManager(mLayoutManager);
+                mAdapter = new StreetsAdapter(getApplicationContext(), mLayoutManager, streets);
+                streetsRecyclerView.setAdapter(mAdapter);
+
+                }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
     }
 
 

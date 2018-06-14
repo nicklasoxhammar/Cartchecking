@@ -6,30 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="3"
     android:padding="10dp"
+    android:focusableInTouchMode="true"
     tools:context="com.nicklasoxhammar.cartchecking.Activities.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="match_parent"
+       >
 
-        <TextView
+        <!--<TextView
             android:id="@+id/userTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="Scan or search for street name:"
-            android:layout_below="@+id/cameraPreview" />
+            android:layout_below="@+id/cameraPreview" />-->
 
         <android.support.v7.widget.AppCompatAutoCompleteTextView
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/userTextView"
             android:id="@+id/autoCompleteStreetTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/searchButton"
+            android:hint="Search for street"
             android:singleLine="true"
             />
 
@@ -38,15 +37,24 @@
             android:minHeight="0dp"
             android:minWidth="0dp"
             android:padding="10dp"
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/userTextView"
             android:background="@drawable/button"
             android:textAllCaps="false"
             android:onClick="searchStreetName"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/streetsRecyclerView"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/searchButton"
+            android:layout_above="@+id/scan_button"
+            >
+        </android.support.v7.widget.RecyclerView>
 
         <ProgressBar
             android:id="@+id/search_progress"
@@ -56,14 +64,7 @@
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        >
-            <Button
+            <!--<Button
                 android:id="@+id/scanButton"
                 android:layout_width="match_parent"
                 android:layout_above="@id/sign_out_button"
@@ -73,46 +74,66 @@
                 android:textAllCaps="false"
                 android:background="@drawable/button"
                 android:onClick="startBarcodeScanActivity"
-                android:layout_marginBottom="25dp" />
+                android:layout_marginBottom="15dp" />-->
+
+        <Button
+
+            android:id="@+id/scan_button"
+            android:layout_width="70dp"
+
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/add_resident_button"
+            android:layout_toEndOf="@id/add_resident_button"
+            android:layout_marginLeft="10dp"
+
+            android:background="@drawable/button"
+            android:onClick="startBarcodeScanActivity"
+            android:text="Scan&#10;QR code"
+            android:textAllCaps="false" />
 
              <Button
-
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
+                 android:layout_width="70dp"
+                android:layout_toStartOf="@id/filler_button"
                  android:layout_alignParentBottom="true"
-                 android:layout_marginBottom="25dp"
-                 android:layout_marginLeft="20dp"
-                 android:layout_marginRight="20dp"
+                 android:layout_marginBottom="15dp"
 
                 android:text="Edit&#10;resident"
-                android:id="@+id/filler_button"
+                android:id="@+id/start_edit_button"
                 android:background="@drawable/button"
                 android:textAllCaps="false"
                 android:onClick="startEditResidentActivity"/>
 
+        <Button
+            android:layout_width="10dp"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/filler_button"/>
+
 
             <Button
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_toLeftOf="@id/filler_button"
-
+                android:layout_width="70dp"
+                android:layout_marginBottom="15dp"
+                android:layout_toStartOf="@+id/start_edit_button"
+                android:layout_marginRight="10dp"
 
                 android:text="Sign&#10;out"
                 android:id="@+id/sign_out_button"
                 android:background="@drawable/button"
                 android:textAllCaps="false"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="25dp"
                 android:onClick="signOut"/>
 
             <Button
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_toRightOf="@id/filler_button"
+                android:layout_width="70dp"
+                android:layout_toEndOf="@id/filler_button"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="25dp"
                 android:id="@+id/add_resident_button"
+                android:layout_marginBottom="15dp"
 
                 android:onClick="startAddResidentActivity"
                 android:textAllCaps="false"

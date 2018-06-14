@@ -208,10 +208,6 @@ public class IdScannedActivity extends AppCompatActivity {
            Toast.makeText(this, "Report failed, please try again!", Toast.LENGTH_SHORT).show();
        }
 
-       //Start MainActivity
-       Intent myIntent = new Intent(IdScannedActivity.this, MainActivity.class);
-       IdScannedActivity.this.startActivity(myIntent);
-
        finish();
 
    }
