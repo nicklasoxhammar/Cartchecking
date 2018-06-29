@@ -3,19 +3,28 @@ package com.nicklasoxhammar.cartchecking.Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
 import com.nicklasoxhammar.cartchecking.ResidentAddress;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AddResidentActivity extends AppCompatActivity {
 
@@ -23,9 +32,11 @@ public class AddResidentActivity extends AppCompatActivity {
 
     EditText firstNameEditText;
     EditText lastNameEditText;
-    EditText streetNameEditText;
+    AutoCompleteTextView streetNameAutoText;
     EditText streetNumberEditText;
     EditText apartmentNumberEditText;
+
+    ArrayList<String> streets;
 
     ArrayList<EditText> editTextList;
 
@@ -39,6 +50,7 @@ public class AddResidentActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference();
 
         addEditTexts();
+        setupAutoComplete();
 
 
     }
@@ -53,11 +65,11 @@ public class AddResidentActivity extends AppCompatActivity {
             }
         }
 
-        ResidentAddress address = new ResidentAddress(streetNumberEditText.getText().toString(), streetNameEditText.getText().toString(), apartmentNumberEditText.getText().toString());
+        ResidentAddress address = new ResidentAddress(streetNumberEditText.getText().toString(), streetNameAutoText.getText().toString(), apartmentNumberEditText.getText().toString());
 
         Resident resident = new Resident(firstNameEditText.getText().toString(), lastNameEditText.getText().toString(), address);
 
-        String streetName = streetNameEditText.getText().toString().toLowerCase();
+        String streetName = streetNameAutoText.getText().toString().toLowerCase();
 
         try {
             String residentId = database.child("residents").child(streetName).push().getKey();
@@ -90,8 +102,8 @@ public class AddResidentActivity extends AppCompatActivity {
         lastNameEditText = findViewById(R.id.last_name_edit_text);
         editTextList.add(lastNameEditText);
 
-        streetNameEditText = findViewById(R.id.street_name_edit_text);
-        editTextList.add(streetNameEditText);
+        streetNameAutoText = findViewById(R.id.street_name_auto_text);
+        editTextList.add(streetNameAutoText);
 
         streetNumberEditText = findViewById(R.id.street_number_edit_text);
         editTextList.add(streetNumberEditText);
@@ -109,5 +121,39 @@ public class AddResidentActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setupAutoComplete(){
+
+        streets = new ArrayList<>();
+
+        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    streets.add(snapshot.getKey());
+                }
+
+                //sort alphabetically
+                Collections.sort(streets, new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        return s1.compareTo(s2);
+                    }
+                });
+
+                //Add streets to autocomplete textview
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_dropdown_item_1line, streets);
+                streetNameAutoText.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

@@ -29,8 +29,8 @@
         android:inputType="textPersonName"
         android:hint="Last name"/>
 
-    <EditText
-        android:id="@+id/street_name_edit_text"
+    <AutoCompleteTextView
+        android:id="@+id/street_name_auto_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/street_name_edit_text"
+        android:layout_below="@+id/street_name_auto_text"
         android:layout_marginTop="26dp"
         android:ems="10"
         android:hint="20 (street number)"

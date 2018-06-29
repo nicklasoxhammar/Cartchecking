@@ -135,10 +135,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
 
-        // Check for a valid email address.
+        // Check for a valid email address
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
+            cancel = true;
+
+        }else if (TextUtils.isEmpty(password)){
+            mPasswordView.setError("This field is required");
+            focusView = mPasswordView;
             cancel = true;
         }
 
@@ -163,6 +168,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 startMainActivity();
 
                             } else {
+                                Log.d("TAG", "HELLO ");
                                 // If sign in fails, display a message to the user.
                                 Log.w("tag", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",

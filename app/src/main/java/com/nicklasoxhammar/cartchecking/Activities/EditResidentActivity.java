@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -22,6 +24,8 @@ import com.nicklasoxhammar.cartchecking.Resident;
 import com.nicklasoxhammar.cartchecking.ResidentAddress;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,13 +47,14 @@ public class EditResidentActivity extends AppCompatActivity {
 
     EditText firstNameEditText;
     EditText lastNameEditText;
-    EditText streetNameEditText;
+    AutoCompleteTextView streetNameAutoText;
     EditText streetNumberEditText;
     EditText apartmentNumberEditText;
 
     String[] invalidCharacters = {".","#","$","[","]"};
 
     ArrayList<EditText> editTextList;
+    ArrayList<String> streets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +77,13 @@ public class EditResidentActivity extends AppCompatActivity {
         residentId = searchIdEditText.getText().toString();
 
         checkId();
-
     }
 
 
 
     public void addResidentChangesToDatabase(View view){
 
-        String streetName = streetNameEditText.getText().toString();
+        String streetName = streetNameAutoText.getText().toString();
 
         resident.setFirstName(firstNameEditText.getText().toString());
         resident.setLastName(lastNameEditText.getText().toString());
@@ -124,9 +128,9 @@ public class EditResidentActivity extends AppCompatActivity {
         lastNameEditText.setText(resident.getLastName());
         editTextList.add(lastNameEditText);
 
-        streetNameEditText = findViewById(R.id.edit_street_name_edit_text);
-        streetNameEditText.setText(resident.getAddress().getStreetName());
-        editTextList.add(streetNameEditText);
+        streetNameAutoText = findViewById(R.id.edit_street_name_auto_text);
+        streetNameAutoText.setText(resident.getAddress().getStreetName());
+        editTextList.add(streetNameAutoText);
 
         streetNumberEditText = findViewById(R.id.edit_street_number_edit_text);
         streetNumberEditText.setText(resident.getAddress().getStreetNumber());
@@ -134,6 +138,8 @@ public class EditResidentActivity extends AppCompatActivity {
 
         apartmentNumberEditText = findViewById(R.id.edit_apartment_number_edit_text);
         apartmentNumberEditText.setText(resident.getAddress().getApartmentNumber());
+
+        setupAutoComplete();
     }
 
     public void checkId(){
@@ -294,5 +300,39 @@ public class EditResidentActivity extends AppCompatActivity {
         EditResidentActivity.this.startActivity(myIntent);
 
         finish();
+    }
+
+    public void setupAutoComplete(){
+
+        streets = new ArrayList<>();
+
+        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    streets.add(snapshot.getKey());
+                }
+
+                //sort alphabetically
+                Collections.sort(streets, new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        return s1.compareTo(s2);
+                    }
+                });
+
+                //Add streets to autocomplete textview
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_dropdown_item_1line, streets);
+                streetNameAutoText.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

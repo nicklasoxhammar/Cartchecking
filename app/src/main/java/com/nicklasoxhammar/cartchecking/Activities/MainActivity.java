@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser currentUser;
 
     ProgressBar mProgressView;
+
+    ArrayList<String> streets;
 
     ArrayList<Resident> residents;
 
@@ -380,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupStreetsRecyclerView(){
 
-        final ArrayList<String> streets = new ArrayList<>();
+        streets = new ArrayList<>();
 
         database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -405,6 +408,12 @@ public class MainActivity extends AppCompatActivity {
                 streetsRecyclerView.setLayoutManager(mLayoutManager);
                 mAdapter = new StreetsAdapter(getApplicationContext(), mLayoutManager, streets);
                 streetsRecyclerView.setAdapter(mAdapter);
+
+
+                //Add streets to autocomplete textview
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_dropdown_item_1line, streets);
+                streetNameAutoCompleteTextView.setAdapter(adapter);
 
                 }
 
