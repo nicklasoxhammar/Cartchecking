@@ -12,11 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -42,6 +46,7 @@ import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = "MainActivity";
 
+    private Menu menu;
+
     private FirebaseAuth mAuth;
 
     String qrString;
@@ -60,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView streetsRecyclerView;
 
     FirebaseUser currentUser;
+
+    String route;
 
     ProgressBar mProgressView;
 
@@ -104,13 +113,68 @@ public class MainActivity extends AppCompatActivity {
 
         setupStreetsRecyclerView();
 
+        makeActionOverflowMenuShown();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+
+        chooseRoute();
+
+    }
+
+    public void chooseRoute(){
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_route:
+                return true;
+
+            case R.id.action_scan:
+                startBarcodeScanActivity();
+                return true;
+
+            case R.id.action_signOut:
+                signOut();
+                return true;
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void makeActionOverflowMenuShown() {
+        //devices with hardware menu button (e.g. Samsung Note) don't show action overflow menu
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
+        return true;
     }
 
     public void setStreetName(String streetName) {
         this.streetName = streetName;
     }
 
-    public void startBarcodeScanActivity(View view){
+    public void startBarcodeScanActivity(){
 
         Intent intent = new Intent(this, BarcodeScanActivity.class);
         startActivityForResult(intent, 1);
@@ -187,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void signOut(View view){
+    public void signOut(){
 
         FirebaseAuth.getInstance().signOut();
 
@@ -197,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void startAddResidentActivity(View view){
+   /* public void startAddResidentActivity(View view){
 
         Intent myIntent = new Intent(MainActivity.this, AddResidentActivity.class);
         MainActivity.this.startActivity(myIntent);
@@ -209,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(MainActivity.this, EditResidentActivity.class);
         MainActivity.this.startActivity(myIntent);
 
-    }
+    }*/
 
     public void searchStreetName(View view){
 

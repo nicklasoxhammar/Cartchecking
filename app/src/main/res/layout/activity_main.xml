@@ -6,11 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
     android:focusableInTouchMode="true"
     tools:context="com.nicklasoxhammar.cartchecking.Activities.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:title="No route"
+        app:titleTextColor="@color/colorWhite"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <RelativeLayout
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        >
@@ -52,7 +63,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/searchButton"
-            android:layout_above="@+id/scan_button"
             >
         </android.support.v7.widget.RecyclerView>
 
@@ -76,7 +86,7 @@
                 android:onClick="startBarcodeScanActivity"
                 android:layout_marginBottom="15dp" />-->
 
-        <Button
+       <!-- <Button
 
             android:id="@+id/scan_button"
             android:layout_width="70dp"
@@ -141,7 +151,7 @@
                 android:text="Add&#10;resident" />
 
 
-    <!--<Button
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
