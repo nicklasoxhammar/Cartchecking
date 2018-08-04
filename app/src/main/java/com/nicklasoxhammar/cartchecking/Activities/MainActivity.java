@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,10 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.CrashUtils;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nicklasoxhammar.cartchecking.Adapters.ResidentsAdapter;
+import com.nicklasoxhammar.cartchecking.Adapters.RoutesAdapter;
 import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
@@ -50,8 +50,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -73,10 +71,16 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar mProgressView;
 
     ArrayList<String> streets;
+    ArrayList<String> routes;
 
     ArrayList<Resident> residents;
 
     String residentId;
+
+    Toolbar toolbar;
+
+    Boolean popupOpen = false;
+
 
     String streetName;
 
@@ -90,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference database;
 
     String[] invalidCharacters = {".","#","$","[","]"};
+
+    public void closePopup(){
+        pw.dismiss();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,17 +120,89 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        setupStreetsRecyclerView();
+        //setupStreetsRecyclerView();
 
         makeActionOverflowMenuShown();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        chooseRoute();
+        //get routes and open choose route window
+        getRoutesFromDatabase();
 
+      
     }
 
+    public void setRoute(String route){
+        this.route = route;
+        toolbar.setTitle(route);
+
+        setupStreetsRecyclerView();
+    }
+
+
     public void chooseRoute(){
+
+        if(popupOpen){return;}
+
+        popupOpen = true;
+
+        Log.d(TAG, "chooseRoute: CALLED");
+
+        try {
+            //get height and width of default display
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            int height = size.y;
+
+            //We need to get the instance of the LayoutInflater, use the context of this activity
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //Inflate the view from a predefined XML layout
+            View backgroundLayout = inflater.inflate(R.layout.dark_background_popup, (ViewGroup) findViewById(R.id.background_popup_element));
+
+            backgroundPw = new PopupWindow(backgroundLayout, ViewGroup.LayoutParams.MATCH_PARENT,  ViewGroup.LayoutParams.MATCH_PARENT, false);
+            backgroundPw.showAtLocation(backgroundLayout, Gravity.CENTER, 0, 0);
+
+            final View layout = inflater.inflate(R.layout.street_name_popup,
+                    (ViewGroup) findViewById(R.id.popup_element));
+
+            pw = new PopupWindow(layout);
+            pw.setWidth((int) (width * 0.9));
+            pw.setHeight((int) (height * 0.9));
+            pw.setFocusable(true);
+
+            // display the popup in the center
+            pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+
+            pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    backgroundPw.dismiss();
+                    popupOpen = false;
+                    findViewById(R.id.searchButton).setClickable(true);
+                }
+            });
+
+            TextView streetNameTextView = layout.findViewById(R.id.street_name_textView);
+            streetNameTextView.setText("Choose Route");
+
+            ImageButton exitButton = layout.findViewById(R.id.exitPopupButton);
+            exitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    pw.dismiss();
+                }
+            });
+
+            setUpPopupRecyclerView(layout);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -129,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_route:
+                chooseRoute();
                 return true;
 
             case R.id.action_scan:
@@ -279,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
 
         view.setClickable(false);
 
-        streetName = streetNameAutoCompleteTextView.getText().toString().toLowerCase();
+        streetName = streetNameAutoCompleteTextView.getText().toString().toUpperCase();
 
         if(streetName.equals("")){
             Toast.makeText(this, "Please enter a street name!", Toast.LENGTH_SHORT).show();
@@ -308,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
 
         residents.clear();
 
-        database.child("residents").child(streetName).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child(route).child(streetName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -339,6 +421,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setUpPopupRecyclerView(final View layout){
+
+
+        LinearLayoutManager mLayoutManager;
+        RecyclerView residentsRecyclerView;
+        RoutesAdapter mAdapter;
+
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        residentsRecyclerView = layout.findViewById(R.id.popupRecyclerView);
+        residentsRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RoutesAdapter(getApplicationContext(), mLayoutManager, routes);
+        residentsRecyclerView.setAdapter(mAdapter);
+
+
+    }
+
+
     private void setUpResidentsRecyclerView(View layout){
         sortResidentList();
 
@@ -347,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
         ResidentsAdapter mAdapter;
 
         mLayoutManager = new LinearLayoutManager(this);
-        residentsRecyclerView = layout.findViewById(R.id.residentsRecyclerView);
+        residentsRecyclerView = layout.findViewById(R.id.popupRecyclerView);
         residentsRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
         residentsRecyclerView.setAdapter(mAdapter);
@@ -422,6 +521,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getRoutesFromDatabase(){
+
+        routes = new ArrayList<>();
+
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    routes.add(snapshot.getKey());
+                }
+
+                chooseRoute();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -449,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
 
         streets = new ArrayList<>();
 
-        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child(route).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -488,9 +609,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
+
+
+
 
 
 

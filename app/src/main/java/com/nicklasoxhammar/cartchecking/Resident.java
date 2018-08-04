@@ -10,22 +10,25 @@ public class Resident {
 
     String residentId;
 
-    String firstName;
+    //String firstName;
     String lastName;
     //String email;
-    ResidentAddress address;
+    //ResidentAddress address;
+    String streetName;
+    String streetNumber;
+    String apartmentNumber;
 
     //ArrayList<CartCheck> cartChecks;
 
     public Resident(){}
 
-    public Resident(String firstName, String lastName, ResidentAddress address){
+    public Resident(String lastName, String streetName, String streetNumber, String apartmentNumber){
 
         //this.residentId = residentId;
-        this.firstName = firstName;
+        //this.firstName = firstName;
         this.lastName = lastName;
         //this.email = email;
-        this.address = address;
+        //this.address = address;
         //this.cartChecks = cartChecks;
     }
 
@@ -47,13 +50,13 @@ public class Resident {
         this.residentId = residentId;
     }
 
-    public String getFirstName() {
+    /*public String getFirstName() {
         return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
+    }*/
 
     public String getLastName() {
         return lastName;
