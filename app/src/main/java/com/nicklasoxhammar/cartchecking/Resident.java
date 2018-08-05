@@ -1,14 +1,12 @@
 package com.nicklasoxhammar.cartchecking;
 
-import java.util.ArrayList;
-
 /**
  * Created by Nick on 2018-04-23.
  */
 
 public class Resident {
 
-    String residentId;
+    private String ID;
 
     //String firstName;
     String lastName;
@@ -17,16 +15,21 @@ public class Resident {
     String streetName;
     String streetNumber;
     String apartmentNumber;
+    String cartOnDifferentStreet;
 
     //ArrayList<CartCheck> cartChecks;
 
     public Resident(){}
 
-    public Resident(String lastName, String streetName, String streetNumber, String apartmentNumber){
+    public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet){
 
-        //this.residentId = residentId;
+        this.ID = ID;
         //this.firstName = firstName;
         this.lastName = lastName;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.apartmentNumber = apartmentNumber;
+        this.cartOnDifferentStreet = cartOnDifferentStreet;
         //this.email = email;
         //this.address = address;
         //this.cartChecks = cartChecks;
@@ -34,7 +37,7 @@ public class Resident {
 
     /*public Resident(String firstName, String lastName, ResidentAddress address, ArrayList<CartCheck> cartChecks){
 
-        //this.residentId = residentId;
+        //this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         //this.email = email;
@@ -42,12 +45,12 @@ public class Resident {
         this.cartChecks = cartChecks;
     }*/
 
-    public String getResidentId() {
-        return residentId;
+    public String getID() {
+        return ID;
     }
 
-    public void setResidentId(String residentId) {
-        this.residentId = residentId;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     /*public String getFirstName() {
@@ -66,14 +69,56 @@ public class Resident {
         this.lastName = lastName;
     }
 
-    public ResidentAddress getAddress() {
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getStreetNumber() {
+        return streetNumber;
+    }
+
+    public int getStreetNumberInt(){
+
+        String streetNumberOnlyDigits = streetNumber.replaceAll("[^\\d]", "" );
+
+        int streetNumberInt = Integer.parseInt(streetNumberOnlyDigits);
+
+        return streetNumberInt;
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public String getApartmentNumber() {
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber(String apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    public String getCartOnDifferentStreet() {
+        return cartOnDifferentStreet;
+    }
+
+    public void setCartOnDifferentStreet(String cartOnDifferentStreet) {
+        this.cartOnDifferentStreet = cartOnDifferentStreet;
+    }
+
+
+    /* public ResidentAddress getAddress() {
 
         return address;
     }
 
     public void setAddress(ResidentAddress address) {
         this.address = address;
-    }
+    }*/
 
 
    /*public ArrayList<CartCheck> getCartChecks() {

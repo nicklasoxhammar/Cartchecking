@@ -32,7 +32,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.IdScannedActivity"
-            android:label="Report cart check" />
+            android:label="Report cart check"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/AppTheme"
+            />
         <activity
             android:name=".Activities.AddResidentActivity"
             android:label="Add resident"></activity>

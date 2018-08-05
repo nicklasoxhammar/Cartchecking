@@ -75,7 +75,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder  {
             @Override
             public void onClick(View view) {
                 if(mContext instanceof MainActivity){
-                    ((MainActivity)mContext).setStreetName(s.toLowerCase());
+                    ((MainActivity)mContext).setStreetName(s);
                     ((MainActivity)mContext).getResidentsByStreetName();
                 }
             }

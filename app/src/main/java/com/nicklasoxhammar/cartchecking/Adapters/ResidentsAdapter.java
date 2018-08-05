@@ -1,7 +1,6 @@
 package com.nicklasoxhammar.cartchecking.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.nicklasoxhammar.cartchecking.Activities.IdScannedActivity;
 import com.nicklasoxhammar.cartchecking.Activities.MainActivity;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
@@ -76,14 +74,14 @@ public class ResidentsAdapter extends RecyclerView.Adapter<ResidentsAdapter.View
 
         final Resident r = residents.get(position);
 
-        holder.address.setText(r.getAddress().getStreetNumber() + " " + r.getAddress().getStreetName());
+        holder.address.setText(r.getStreetNumber() + " " + r.getStreetName());
 
-        if(!r.getAddress().getApartmentNumber().equals("")) {
-            holder.apartmentNumber.setText("APT: " + r.getAddress().getApartmentNumber());
+        if(!r.getApartmentNumber().equals("")) {
+            holder.apartmentNumber.setText("APT: " + r.getApartmentNumber());
         }else{
             holder.apartmentNumber.setText("");
         }
-        holder.name.setText(r.getFirstName() + " " + r.getLastName());
+        holder.name.setText(r.getLastName());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,12 +100,7 @@ public class ResidentsAdapter extends RecyclerView.Adapter<ResidentsAdapter.View
     }
 
     public void startIdScannedActivity(Resident r){
-
-        Intent intent = new Intent(mContext, IdScannedActivity.class);
-        intent.putExtra("residentId", r.getResidentId());
-        intent.putExtra("streetName", r.getAddress().getStreetName().toLowerCase());
-        mContext.startActivity(intent);
-
+        ((MainActivity)mContext).startIdScannedActivity(r.getStreetName(), r.getID());
     }
 
 

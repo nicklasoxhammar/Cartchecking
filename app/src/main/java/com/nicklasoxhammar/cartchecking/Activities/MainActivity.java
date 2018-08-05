@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -294,12 +292,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        database.child("residents").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child(route).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     if(snapshot.hasChild(residentId)){
-                        residentExists(snapshot.getKey());
+                        startIdScannedActivity(snapshot.getKey(), residentId);
                         return;
                     }
                 }
@@ -317,11 +315,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    public void residentExists(String streetNameKey){
+    public void startIdScannedActivity(String streetNameKey, String residentId){
 
         Intent intent = new Intent(MainActivity.this, IdScannedActivity.class);
         intent.putExtra("residentId", residentId);
         intent.putExtra("streetName", streetNameKey);
+        intent.putExtra("route", route);
         MainActivity.this.startActivity(intent);
 
     }
@@ -396,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     // residentId exists
 
-                    showProgress(true);
+                    //showProgress(true);
 
                     //resident = (Resident) dataSnapshot.getValue(Resident.class);
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
@@ -451,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
         residentsRecyclerView.setAdapter(mAdapter);
 
-        showProgress(false);
+        //showProgress(false);
     }
 
     public void sortResidentList(){
@@ -459,13 +458,17 @@ public class MainActivity extends AppCompatActivity {
         Collections.sort(residents, new Comparator<Resident>() {
             @Override
             public int compare(Resident r1, Resident r2) {
-            return r1.getAddress().getStreetNumberInt() - r2.getAddress().getStreetNumberInt();
+            return r1.getStreetNumberInt() - r2.getStreetNumberInt();
         }
     });
 
     }
 
     public void showStreetNamePopup(){
+
+        if(popupOpen){return;}
+
+        popupOpen = true;
 
         try {
             //get height and width of default display
@@ -497,6 +500,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDismiss() {
                     backgroundPw.dismiss();
+                    popupOpen = false;
                     findViewById(R.id.searchButton).setClickable(true);
                 }
             });
@@ -543,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    /*@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
@@ -564,7 +568,7 @@ public class MainActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-    }
+    }*/
 
     public void setupStreetsRecyclerView(){
 

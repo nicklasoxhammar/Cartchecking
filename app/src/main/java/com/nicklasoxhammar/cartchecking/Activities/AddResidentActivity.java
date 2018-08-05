@@ -28,7 +28,7 @@ import java.util.Comparator;
 
 public class AddResidentActivity extends AppCompatActivity {
 
-    DatabaseReference database;
+   /* DatabaseReference database;
 
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -73,7 +73,7 @@ public class AddResidentActivity extends AppCompatActivity {
 
         try {
             String residentId = database.child("residents").child(streetName).push().getKey();
-            resident.setResidentId(residentId);
+            resident.setID(residentId);
             database.child("residents").child(streetName).child(residentId).setValue(resident);
             Toast.makeText(this, "Resident successfully added to database!", Toast.LENGTH_SHORT).show();
             Log.d("TAG", "ResidentId: " + residentId);
@@ -155,5 +155,5 @@ public class AddResidentActivity extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 }

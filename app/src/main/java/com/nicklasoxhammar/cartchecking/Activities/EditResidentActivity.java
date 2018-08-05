@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class EditResidentActivity extends AppCompatActivity {
 
-    DatabaseReference database;
+    /*DatabaseReference database;
 
     String residentId;
     Resident resident;
@@ -163,7 +163,7 @@ public class EditResidentActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     if(snapshot.hasChild(residentId)){
                         streetNameKey = snapshot.getKey();
-                        residentExists();
+                        startIdScannedActivity();
                         return;
                     }
                 }
@@ -180,7 +180,7 @@ public class EditResidentActivity extends AppCompatActivity {
 
     }
 
-    public void residentExists(){
+    public void startIdScannedActivity(){
 
         getResidentFromDatabase();
 
@@ -334,5 +334,5 @@ public class EditResidentActivity extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 }

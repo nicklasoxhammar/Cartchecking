@@ -56,82 +56,86 @@
         android:layout_height="0dp"
         android:background="@color/colorBackground"
         />-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="3">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--android:layout_weight="3"-->
+
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <CheckBox
-            android:id="@+id/correctlyRecycledCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="None, Everything is correctly recycled!"
-            android:layout_marginBottom="10dp"
-            android:tag="correctlyRecycled"
-            />
+            <CheckBox
+                android:id="@+id/correctlyRecycledCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:tag="correctlyRecycled"
+                android:text="None, Everything is correctly recycled!" />
 
-        <CheckBox
-            android:id="@+id/garbageCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bagged recyclables/garbage"
-            />
+            <CheckBox
+                android:id="@+id/garbageCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bagged recyclables/garbage" />
 
-        <CheckBox
-            android:id="@+id/plasticBagCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Plastic bag"
-            />
-        <CheckBox
-            android:id="@+id/foodCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Food or liquid"
-            />
-        <CheckBox
-            android:id="@+id/clothingCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Clothing or linen"
-            />
-        <CheckBox
-            android:id="@+id/tanglerCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tangler"
-            />
-        <CheckBox
-            android:id="@+id/bigItemCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Big item"
-            />
-        <CheckBox
-            android:id="@+id/recyclablesInTrashCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Recyclables in trash cart"
-            />
+            <CheckBox
+                android:id="@+id/plasticBagCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Plastic bag" />
+
+            <CheckBox
+                android:id="@+id/foodCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Food or liquid" />
+
+            <CheckBox
+                android:id="@+id/clothingCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Clothing or linen" />
+
+            <CheckBox
+                android:id="@+id/tanglerCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tangler" />
+
+            <CheckBox
+                android:id="@+id/bigItemCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Big item" />
+
+            <CheckBox
+                android:id="@+id/recyclablesInTrashCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recyclables in trash cart" />
 
         </TableLayout>
-
     </ScrollView>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:onClick="Report"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
         android:background="@drawable/button"
-        android:textAllCaps="false"
-        android:layout_marginBottom="25dp"
-        android:text="Report" />
+        android:onClick="Report"
+        android:text="Report"
+        android:textAllCaps="false" />
+
+</RelativeLayout>
 
 </LinearLayout>
