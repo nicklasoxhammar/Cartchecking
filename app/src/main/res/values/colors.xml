@@ -11,7 +11,7 @@
     <color name="colorLightRed">#ff5e5e</color>
 
     <!-- Background color-->
-    <color name="colorBackground">#cfd8dc</color>
+    <color name="colorBackground">#eeeeee</color>
     <color name="defaultBackgroundColor">#FAFAFA</color>
 
     <color name="transparentDark">#aa000000</color>

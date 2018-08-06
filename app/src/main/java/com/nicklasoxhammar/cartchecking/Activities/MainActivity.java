@@ -144,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
         popupOpen = true;
 
-        Log.d(TAG, "chooseRoute: CALLED");
-
         try {
             //get height and width of default display
             Display display = getWindowManager().getDefaultDisplay();
