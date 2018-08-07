@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class CartCheck {
 
     String date;
-    String comment;
+    String notes;
 
     Boolean correctlyRecycled;
 
@@ -17,10 +17,10 @@ public class CartCheck {
 
     CartCheck(){}
 
-    public CartCheck(String date, String comment, ArrayList<String> nonRecyclables, Boolean correctlyRecycled){
+    public CartCheck(String date, String notes, Boolean correctlyRecycled){
 
         this.date = date;
-        this.comment = comment;
+        this.notes = notes;
         this.nonRecyclables = nonRecyclables;
         this.correctlyRecycled = correctlyRecycled;
 
@@ -34,12 +34,12 @@ public class CartCheck {
         this.date = date;
     }
 
-    public String getComment() {
-        return comment;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public ArrayList<String> getNonRecyclables() {

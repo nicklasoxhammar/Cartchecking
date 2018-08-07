@@ -254,6 +254,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void startBarcodeScanActivity(){
 
+        if(route == null || route == ""){
+            Toast.makeText(this, "Please choose a route!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(this, BarcodeScanActivity.class);
         startActivityForResult(intent, 1);
 

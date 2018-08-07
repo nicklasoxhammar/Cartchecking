@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:gravity="top"
-            android:hint="Write comment here"
+            android:hint="Write notes here"
             android:layout_below="@+id/id_scanned_text_view"
             android:layout_above="@+id/textView"
             android:inputType="textMultiLine"

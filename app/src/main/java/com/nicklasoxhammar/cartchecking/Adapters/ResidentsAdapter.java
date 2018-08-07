@@ -74,7 +74,11 @@ public class ResidentsAdapter extends RecyclerView.Adapter<ResidentsAdapter.View
 
         final Resident r = residents.get(position);
 
-        holder.address.setText(r.getStreetNumber() + " " + r.getStreetName());
+        if(!r.getCartOnDifferentStreet().equals("")){
+            holder.address.setText("*" + r.getStreetNumber() + " " + r.getStreetName() + "*");
+        }else {
+            holder.address.setText(r.getStreetNumber() + " " + r.getStreetName());
+        }
 
         if(!r.getApartmentNumber().equals("")) {
             holder.apartmentNumber.setText("APT: " + r.getApartmentNumber());

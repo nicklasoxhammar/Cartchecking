@@ -20,6 +20,7 @@ import com.nicklasoxhammar.cartchecking.CartCheck;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -200,12 +201,23 @@ public class IdScannedActivity extends AppCompatActivity {
            return;
        }
 
-       CartCheck cartCheck = new CartCheck(Calendar.getInstance().getTime().toString(), commentTextView.getText().toString(), nonRecyclables, correctlyRecycled);
+       String nonRecyclablesString = "";
+
+       for(String s : nonRecyclables){
+           nonRecyclablesString += s + ", ";
+       }
+
+       String notes = commentTextView.getText().toString() + " | Non recyclables found: " + nonRecyclablesString;
+
+       SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM");
+       String strDate = dateFormat.format((Calendar.getInstance().getTime()));
+
+       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled);
 
        //resident.addCartCheck(cartCheck);
 
        try {
-           database.child("residents").child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
+           database.child(route).child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
            Toast.makeText(this, "Report successfully added to database!", Toast.LENGTH_SHORT).show();
 
        }catch (Exception e){
