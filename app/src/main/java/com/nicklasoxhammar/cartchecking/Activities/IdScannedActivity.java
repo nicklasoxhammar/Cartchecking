@@ -31,13 +31,14 @@ public class IdScannedActivity extends AppCompatActivity {
     RecyclerView.Adapter mAdapter;*/
 
     ArrayList<CheckBox> nonRecyclableCheckBoxList;
+    ArrayList<CheckBox> cartCheckBoxList;
 
     CheckBox correctlyRecycledCheckBox;
+    CheckBox cartNotSetOutCheckBox;
+    CheckBox onlyTrashSetOutCheckBox;
 
     TextView textView;
     EditText commentTextView;
-
-    Boolean correctlyRecycled;
 
     DatabaseReference database;
 
@@ -54,6 +55,7 @@ public class IdScannedActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         nonRecyclableCheckBoxList = new ArrayList<>();
+        cartCheckBoxList = new ArrayList<>();
         setupCheckBoxList();
 
         database = FirebaseDatabase.getInstance().getReference();
@@ -102,9 +104,18 @@ public class IdScannedActivity extends AppCompatActivity {
 
     public void setupCheckBoxList(){
 
+        //Add the three first checkboxes to cartCheckBoxList
         correctlyRecycledCheckBox = findViewById(R.id.correctlyRecycledCheckBox);
-        nonRecyclableCheckBoxList.add(correctlyRecycledCheckBox);
+        cartCheckBoxList.add(correctlyRecycledCheckBox);
 
+        cartNotSetOutCheckBox = findViewById(R.id.cartsNotSetOutCheckBox);
+        cartCheckBoxList.add(cartNotSetOutCheckBox);
+
+        onlyTrashSetOutCheckBox = findViewById(R.id.onlyTrashSetOutCheckBox);
+        cartCheckBoxList.add(onlyTrashSetOutCheckBox);
+
+
+        //Add the rest to nonRecyclableCheckBoxList
         CheckBox garbageCheckBox = findViewById(R.id.garbageCheckBox);
         nonRecyclableCheckBoxList.add(garbageCheckBox);
 
@@ -126,7 +137,7 @@ public class IdScannedActivity extends AppCompatActivity {
         CheckBox recyclablesInTrashCheckBox = findViewById(R.id.recyclablesInTrashCheckBox);
         nonRecyclableCheckBoxList.add(recyclablesInTrashCheckBox);
 
-        for (CheckBox c : nonRecyclableCheckBoxList){
+        /*for (CheckBox c : nonRecyclableCheckBoxList){
             c.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -140,6 +151,20 @@ public class IdScannedActivity extends AppCompatActivity {
                         }
                     } else {
                         correctlyRecycledCheckBox.setChecked(false);
+                    }
+                }
+            });
+        }*/
+
+        //Makes sure that you can only check one of the cartCheckBoxes at once
+        for (CheckBox c : cartCheckBoxList){
+            c.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (CheckBox b : cartCheckBoxList){
+                        if (b.getId() != view.getId()){
+                            b.setChecked(false);
+                        }
                     }
                 }
             });
@@ -178,6 +203,9 @@ public class IdScannedActivity extends AppCompatActivity {
 
    public void Report(View view){
 
+       int setOut = 1;
+       int correctlyRecycled = 1;
+
        Boolean isSomethingChecked = false;
 
        ArrayList<String> nonRecyclables = new ArrayList<>();
@@ -189,14 +217,20 @@ public class IdScannedActivity extends AppCompatActivity {
            }
        }
 
+
+
        if (correctlyRecycledCheckBox.isChecked()){
-           correctlyRecycled = true;
+           correctlyRecycled = 0;
            isSomethingChecked = true;
-       }else{
-           correctlyRecycled = false;
+       }else if (cartNotSetOutCheckBox.isChecked()){
+           setOut = 0;
+           isSomethingChecked = true;
+       }else if (onlyTrashSetOutCheckBox.isChecked()){
+           setOut = 3;
+           isSomethingChecked = true;
        }
 
-       if (isSomethingChecked == false){
+       if (!isSomethingChecked){
            Toast.makeText(this,"Please use the checkboxes!", Toast.LENGTH_SHORT).show();
            return;
        }
@@ -212,7 +246,7 @@ public class IdScannedActivity extends AppCompatActivity {
        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM");
        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
 
-       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, 5);
+       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, setOut);
 
        //resident.addCartCheck(cartCheck);
 

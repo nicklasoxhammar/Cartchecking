@@ -13,13 +13,14 @@ public class CartCheck {
     // 0 = not setout, 1 = setout, 3 = only trash cart is set out
     int setOut;
 
-    Boolean correctlyRecycled;
+    //0 = clean 1 = not;
+    int correctlyRecycled;
 
     ArrayList<String> nonRecyclables;
 
     CartCheck(){}
 
-    public CartCheck(String date, String notes, Boolean correctlyRecycled, int setOut){
+    public CartCheck(String date, String notes, int correctlyRecycled, int setOut){
 
         this.date = date;
         this.setOut = setOut;
@@ -53,11 +54,11 @@ public class CartCheck {
         this.nonRecyclables = nonRecyclables;
     }
 
-    public Boolean getCorrectlyRecycled() {
+    public int getCorrectlyRecycled() {
         return correctlyRecycled;
     }
 
-    public void setCorrectlyRecycled(Boolean correctlyRecycled) {
+    public void setCorrectlyRecycled(int correctlyRecycled) {
         this.correctlyRecycled = correctlyRecycled;
     }
 }
