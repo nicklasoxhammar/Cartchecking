@@ -212,7 +212,7 @@ public class IdScannedActivity extends AppCompatActivity {
        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM");
        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
 
-       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled);
+       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, 5);
 
        //resident.addCartCheck(cartCheck);
 

@@ -10,6 +10,8 @@ public class CartCheck {
 
     String date;
     String notes;
+    // 0 = not setout, 1 = setout, 3 = only trash cart is set out
+    int setOut;
 
     Boolean correctlyRecycled;
 
@@ -17,9 +19,10 @@ public class CartCheck {
 
     CartCheck(){}
 
-    public CartCheck(String date, String notes, Boolean correctlyRecycled){
+    public CartCheck(String date, String notes, Boolean correctlyRecycled, int setOut){
 
         this.date = date;
+        this.setOut = setOut;
         this.notes = notes;
         this.nonRecyclables = nonRecyclables;
         this.correctlyRecycled = correctlyRecycled;
