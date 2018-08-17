@@ -11,16 +11,16 @@ public class CartCheck {
     String date;
     String notes;
     // 0 = not setout, 1 = setout, 3 = only trash cart is set out
-    int setOut;
+    String setOut;
 
     //0 = clean 1 = not;
-    int correctlyRecycled;
+    String correctlyRecycled;
 
     ArrayList<String> nonRecyclables;
 
     CartCheck(){}
 
-    public CartCheck(String date, String notes, int correctlyRecycled, int setOut){
+    public CartCheck(String date, String notes, String correctlyRecycled, String setOut){
 
         this.date = date;
         this.setOut = setOut;
@@ -54,11 +54,11 @@ public class CartCheck {
         this.nonRecyclables = nonRecyclables;
     }
 
-    public int getCorrectlyRecycled() {
+    public String getCorrectlyRecycled() {
         return correctlyRecycled;
     }
 
-    public void setCorrectlyRecycled(int correctlyRecycled) {
+    public void setCorrectlyRecycled(String correctlyRecycled) {
         this.correctlyRecycled = correctlyRecycled;
     }
 }

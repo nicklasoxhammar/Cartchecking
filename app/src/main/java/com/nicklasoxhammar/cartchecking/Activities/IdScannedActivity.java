@@ -1,6 +1,5 @@
 package com.nicklasoxhammar.cartchecking.Activities;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -203,8 +202,8 @@ public class IdScannedActivity extends AppCompatActivity {
 
    public void Report(View view){
 
-       int setOut = 1;
-       int correctlyRecycled = 1;
+       String setOut = "1";
+       String correctlyRecycled = "1";
 
        Boolean isSomethingChecked = false;
 
@@ -220,13 +219,13 @@ public class IdScannedActivity extends AppCompatActivity {
 
 
        if (correctlyRecycledCheckBox.isChecked()){
-           correctlyRecycled = 0;
+           correctlyRecycled = "0";
            isSomethingChecked = true;
        }else if (cartNotSetOutCheckBox.isChecked()){
-           setOut = 0;
+           setOut = "0";
            isSomethingChecked = true;
        }else if (onlyTrashSetOutCheckBox.isChecked()){
-           setOut = 3;
+           setOut = "3";
            isSomethingChecked = true;
        }
 
@@ -241,7 +240,7 @@ public class IdScannedActivity extends AppCompatActivity {
            nonRecyclablesString += s + ", ";
        }
 
-       String notes = commentTextView.getText().toString() + " | Non recyclables found: " + nonRecyclablesString;
+       String notes = commentTextView.getText().toString() + "  " + nonRecyclablesString;
 
        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM");
        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
