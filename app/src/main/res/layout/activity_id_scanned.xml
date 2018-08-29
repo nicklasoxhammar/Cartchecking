@@ -9,7 +9,7 @@
     >
 
     <RelativeLayout
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="10dp"
@@ -33,6 +33,7 @@
             android:hint="Write notes here"
             android:layout_below="@+id/id_scanned_text_view"
             android:inputType="textMultiLine"
+            android:maxLength="100"
             android:background="@color/colorBackground"/>
 
 
@@ -49,7 +50,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="4">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -134,7 +135,8 @@
                     android:id="@+id/recyclablesInTrashCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recyclables in trash cart" />
+                    android:text="Recyclables in trash cart"
+                    android:layout_marginBottom="20dp"/>
 
             </TableLayout>
         </ScrollView>

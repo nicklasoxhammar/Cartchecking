@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -109,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
         streetNameAutoCompleteTextView = findViewById(R.id.autoCompleteStreetTextView);
 
+        checkNetworkConnection();
+
         mAuth = FirebaseAuth.getInstance();
 
         currentUser = mAuth.getCurrentUser();
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if(popupOpen){return;}
 
         popupOpen = true;
+        showProgress(true);
 
         try {
             //get height and width of default display
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        showProgress(false);
 
     }
 
@@ -530,6 +535,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void getRoutesFromDatabase(){
 
+        showProgress(true);
+
         routes = new ArrayList<>();
 
         database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -540,6 +547,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 chooseRoute();
+                showProgress(false);
             }
 
             @Override
@@ -550,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
@@ -571,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-    }*/
+    }
 
     public void setupStreetsRecyclerView(){
 
@@ -614,6 +622,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+    void checkNetworkConnection(){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+
+        }else{
+
+            Toast.makeText(this, "You do not seem to have a network connection!", Toast.LENGTH_LONG).show();
+
+        }
+
 
 
     }
