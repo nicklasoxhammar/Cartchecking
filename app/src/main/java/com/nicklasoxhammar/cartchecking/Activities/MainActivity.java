@@ -43,13 +43,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.nicklasoxhammar.cartchecking.Adapters.ResidentsAdapter;
 import com.nicklasoxhammar.cartchecking.Adapters.RoutesAdapter;
 import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
+import com.nicklasoxhammar.cartchecking.CartCheck;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
+import com.nicklasoxhammar.cartchecking.Street;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -66,12 +72,14 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser currentUser;
 
-    String route;
+    public static String routeString;
+    public static HashMap<String, HashMap<String, Resident>> route;
 
     ProgressBar mProgressView;
 
     ArrayList<String> streets;
     ArrayList<String> routes;
+
 
     ArrayList<Resident> residents;
 
@@ -93,9 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference database;
 
-    String[] invalidCharacters = {".","#","$","[","]"};
+    String[] invalidCharacters = {".", "#", "$", "[", "]"};
 
-    public void closePopup(){
+    public void closePopup() {
         pw.dismiss();
     }
 
@@ -105,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mProgressView = findViewById(R.id.search_progress);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-        residents = new ArrayList<>();
+        mProgressView = findViewById(R.id.search_progress);
 
         streetNameAutoCompleteTextView = findViewById(R.id.autoCompleteStreetTextView);
 
@@ -122,29 +130,65 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance().getReference();
 
+        residents = new ArrayList<>();
+
         //setupStreetsRecyclerView();
 
         makeActionOverflowMenuShown();
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        //get routes and open choose route window
+        //get routes and open choose routeString window
         getRoutesFromDatabase();
 
-      
+
     }
 
-    public void setRoute(String route){
-        this.route = route;
-        toolbar.setTitle(route);
+    public void setRoute(final String rString) {
+        routeString = rString;
+        toolbar.setTitle(routeString);
 
-        setupStreetsRecyclerView();
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    route = new HashMap<>();
+
+                    if (snapshot.getKey().equals(routeString)) {
+
+                        for(DataSnapshot ds : snapshot.getChildren()){
+
+                            route.put(ds.getKey(), new HashMap<String, Resident>());
+
+                            for(DataSnapshot s : ds.getChildren()){
+                                route.get(ds.getKey()).put(s.getKey(), s.getValue(Resident.class));
+                            }
+                        }
+
+                        Toast.makeText(getApplicationContext(), "Route chosen, you can now go offline!", Toast.LENGTH_SHORT).show();
+                        setupStreetsRecyclerView();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
 
-    public void chooseRoute(){
+    public void chooseRoute() {
 
-        if(popupOpen){return;}
+        if (popupOpen) {
+            return;
+        }
 
         popupOpen = true;
         showProgress(true);
@@ -162,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
             //Inflate the view from a predefined XML layout
             View backgroundLayout = inflater.inflate(R.layout.dark_background_popup, (ViewGroup) findViewById(R.id.background_popup_element));
 
-            backgroundPw = new PopupWindow(backgroundLayout, ViewGroup.LayoutParams.MATCH_PARENT,  ViewGroup.LayoutParams.MATCH_PARENT, false);
+            backgroundPw = new PopupWindow(backgroundLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false);
             backgroundPw.showAtLocation(backgroundLayout, Gravity.CENTER, 0, 0);
 
             final View layout = inflater.inflate(R.layout.street_name_popup,
@@ -257,10 +301,10 @@ public class MainActivity extends AppCompatActivity {
         this.streetName = streetName;
     }
 
-    public void startBarcodeScanActivity(){
+    public void startBarcodeScanActivity() {
 
-        if(route == null || route == ""){
-            Toast.makeText(this, "Please choose a route!", Toast.LENGTH_SHORT).show();
+        if (routeString == null || routeString == "") {
+            Toast.makeText(this, "Please choose a routeString!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -273,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 residentId = data.getStringExtra("residentId");
                 checkId();
 
@@ -285,26 +329,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void checkId(){
+    public void checkId() {
 
-        if(residentId.equals("")){
+        if (residentId.equals("")) {
             residentDoesNotExist();
             return;
         }
 
-        for (int i = 0; i < invalidCharacters.length; i++){
+        for (int i = 0; i < invalidCharacters.length; i++) {
 
-            if(residentId.contains(invalidCharacters[i])){
+            if (residentId.contains(invalidCharacters[i])) {
                 residentDoesNotExist();
                 return;
             }
         }
 
-        database.child(route).addListenerForSingleValueEvent(new ValueEventListener() {
+        startIdScannedActivity(streetName, residentId);
+
+       /* database.child(routeString).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if(snapshot.hasChild(residentId)){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.hasChild(residentId)) {
                         startIdScannedActivity(snapshot.getKey(), residentId);
                         return;
                     }
@@ -318,29 +364,29 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
-        }
+    }
 
 
-    public void startIdScannedActivity(String streetNameKey, String residentId){
+    public void startIdScannedActivity(String streetNameKey, String residentId) {
 
         Intent intent = new Intent(MainActivity.this, IdScannedActivity.class);
         intent.putExtra("residentId", residentId);
         intent.putExtra("streetName", streetNameKey);
-        intent.putExtra("route", route);
+        //intent.putExtra("routeString", routeString);
         MainActivity.this.startActivity(intent);
 
     }
 
-    public void residentDoesNotExist(){
+    public void residentDoesNotExist() {
 
         Toast.makeText(getApplicationContext(), "Id not found in database!", Toast.LENGTH_SHORT).show();
 
     }
 
 
-    public void signOut(){
+    public void signOut() {
 
         FirebaseAuth.getInstance().signOut();
 
@@ -364,21 +410,21 @@ public class MainActivity extends AppCompatActivity {
 
     }*/
 
-    public void searchStreetName(View view){
+    public void searchStreetName(View view) {
 
         view.setClickable(false);
 
         streetName = streetNameAutoCompleteTextView.getText().toString().toUpperCase();
 
-        if(streetName.equals("")){
+        if (streetName.equals("")) {
             Toast.makeText(this, "Please enter a street name!", Toast.LENGTH_SHORT).show();
             findViewById(R.id.searchButton).setClickable(true);
             return;
         }
 
-        for (int i = 0; i < invalidCharacters.length; i++){
+        for (int i = 0; i < invalidCharacters.length; i++) {
 
-            if(streetName.contains(invalidCharacters[i])){
+            if (streetName.contains(invalidCharacters[i])) {
                 Toast.makeText(getApplicationContext(), "Street name not in database.", Toast.LENGTH_SHORT).show();
                 findViewById(R.id.searchButton).setClickable(true);
                 return;
@@ -388,28 +434,27 @@ public class MainActivity extends AppCompatActivity {
         getResidentsByStreetName();
 
         //hide keyboard
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
     }
 
-    public void getResidentsByStreetName(){
+    public void getResidentsByStreetName() {
 
-        residents.clear();
+        residents = new ArrayList<>(route.get(streetName).values());
 
-        database.child(route).child(streetName).addListenerForSingleValueEvent(new ValueEventListener() {
+        showStreetNamePopup();
+
+       /* database.child(routeString).child(streetName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // residentId exists
 
-                    //showProgress(true);
-
-                    //resident = (Resident) dataSnapshot.getValue(Resident.class);
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         residents.add(ds.getValue(Resident.class));
                     }
 
+                    alreadyCheckedToday();
                     showStreetNamePopup();
 
                 } else {
@@ -423,13 +468,13 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
     }
 
-    private void setUpPopupRecyclerView(final View layout){
 
+    private void setUpPopupRecyclerView(final View layout) {
 
         LinearLayoutManager mLayoutManager;
         RecyclerView residentsRecyclerView;
@@ -445,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setUpResidentsRecyclerView(View layout){
+    private void setUpResidentsRecyclerView(View layout) {
         sortResidentList();
 
         LinearLayoutManager mLayoutManager;
@@ -461,20 +506,44 @@ public class MainActivity extends AppCompatActivity {
         //showProgress(false);
     }
 
-    public void sortResidentList(){
+    /*public void alreadyCheckedToday() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM", Locale.US);
+        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
+
+
+        for (Resident r : residents) {
+
+            if (r.getCartChecks() != null) {
+                for (CartCheck c : r.getCartChecks()) {
+
+                    r.alreadyChecked = false;
+
+                    if (c != null && c.getDate().equals(strDate)) {
+                        r.alreadyChecked = true;
+                    }
+
+                }
+            }
+        }
+
+    }*/
+
+    public void sortResidentList() {
 
         Collections.sort(residents, new Comparator<Resident>() {
             @Override
             public int compare(Resident r1, Resident r2) {
-            return r1.getStreetNumberInt() - r2.getStreetNumberInt();
-        }
-    });
+                return r1.getStreetNumberInt() - r2.getStreetNumberInt();
+            }
+        });
 
     }
 
-    public void showStreetNamePopup(){
+    public void showStreetNamePopup() {
 
-        if(popupOpen){return;}
+        if (popupOpen) {
+            return;
+        }
 
         popupOpen = true;
 
@@ -491,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
             //Inflate the view from a predefined XML layout
             View backgroundLayout = inflater.inflate(R.layout.dark_background_popup, (ViewGroup) findViewById(R.id.background_popup_element));
 
-            backgroundPw = new PopupWindow(backgroundLayout, ViewGroup.LayoutParams.MATCH_PARENT,  ViewGroup.LayoutParams.MATCH_PARENT, false);
+            backgroundPw = new PopupWindow(backgroundLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, false);
             backgroundPw.showAtLocation(backgroundLayout, Gravity.CENTER, 0, 0);
 
             View layout = inflater.inflate(R.layout.street_name_popup,
@@ -533,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void getRoutesFromDatabase(){
+    public void getRoutesFromDatabase() {
 
         showProgress(true);
 
@@ -581,16 +650,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setupStreetsRecyclerView(){
+    public void setupStreetsRecyclerView() {
 
-        streets = new ArrayList<>();
+        streets = new ArrayList<>(route.keySet());
 
-        database.child(route).addListenerForSingleValueEvent(new ValueEventListener() {
+        //sort alphabetically
+        Collections.sort(streets, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareTo(s2);
+            }
+        });
+
+        streetsRecyclerView = findViewById(R.id.streetsRecyclerView);
+        LinearLayoutManager mLayoutManager;
+        StreetsAdapter mAdapter;
+
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        streetsRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new StreetsAdapter(getApplicationContext(), mLayoutManager, streets);
+        streetsRecyclerView.setAdapter(mAdapter);
+
+
+        //Add streets to autocomplete textview
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.simple_dropdown_item_1line, streets);
+        streetNameAutoCompleteTextView.setAdapter(adapter);
+
+
+        /*database.child(routeString).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     streets.add(snapshot.getKey());
-                    }
+                }
 
                 //sort alphabetically
                 Collections.sort(streets, new Comparator<String>() {
@@ -615,65 +708,32 @@ public class MainActivity extends AppCompatActivity {
                         android.R.layout.simple_dropdown_item_1line, streets);
                 streetNameAutoCompleteTextView.setAdapter(adapter);
 
-                }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
     }
 
-    void checkNetworkConnection(){
+    void checkNetworkConnection() {
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
 
-        }else{
+        } else {
 
             Toast.makeText(this, "You do not seem to have a network connection!", Toast.LENGTH_LONG).show();
 
         }
 
 
-
     }
-
-
-
-
-
-
-    //use to move objects in firebase  !BE CAREFUL! accidentally deleted the whole database using this!
-    /*private void moveChildren(final DatabaseReference fromPath, final DatabaseReference toPath) {
-        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
-                        if (firebaseError != null) {
-                            System.out.println("Copy failed");
-                        } else {
-                            System.out.println("Success");
-
-                        }
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-
 
 
 }

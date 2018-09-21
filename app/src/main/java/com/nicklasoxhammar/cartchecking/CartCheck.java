@@ -16,7 +16,6 @@ public class CartCheck {
     //0 = clean 1 = not;
     String correctlyRecycled;
 
-    ArrayList<String> nonRecyclables;
 
     CartCheck(){}
 
@@ -25,7 +24,6 @@ public class CartCheck {
         this.date = date;
         this.setOut = setOut;
         this.notes = notes;
-        this.nonRecyclables = nonRecyclables;
         this.correctlyRecycled = correctlyRecycled;
 
     }
@@ -44,14 +42,6 @@ public class CartCheck {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public ArrayList<String> getNonRecyclables() {
-        return nonRecyclables;
-    }
-
-    public void setNonRecyclables(ArrayList<String> nonRecyclables) {
-        this.nonRecyclables = nonRecyclables;
     }
 
     public String getCorrectlyRecycled() {

@@ -10,6 +10,8 @@
     <color name="colorRed">#be0000</color>
     <color name="colorLightRed">#ff5e5e</color>
 
+    <color name="colorGray">#b7b7b7</color>
+
     <!-- Background color-->
     <color name="colorBackground">#eeeeee</color>
     <color name="defaultBackgroundColor">#FAFAFA</color>

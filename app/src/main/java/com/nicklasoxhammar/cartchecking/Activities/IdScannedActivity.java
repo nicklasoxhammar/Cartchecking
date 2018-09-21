@@ -1,5 +1,6 @@
 package com.nicklasoxhammar.cartchecking.Activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +23,9 @@ import com.nicklasoxhammar.cartchecking.Resident;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class IdScannedActivity extends AppCompatActivity {
-
-    /*LinearLayoutManager mLayoutManager;
-    RecyclerView nonRecyclablesRecyclerView;
-    RecyclerView.Adapter mAdapter;*/
 
     ArrayList<CheckBox> nonRecyclableCheckBoxList;
     ArrayList<CheckBox> cartCheckBoxList;
@@ -41,10 +39,11 @@ public class IdScannedActivity extends AppCompatActivity {
 
     DatabaseReference database;
 
+    String residentId;
     String streetNameKey;
     Resident resident;
-    String residentId;
-    String route;
+
+    //String route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,20 +68,23 @@ public class IdScannedActivity extends AppCompatActivity {
         } else {
             residentId = extras.getString("residentId");
             streetNameKey = extras.getString("streetName");
-            route = extras.getString("route");
+            /*route = extras.getString("routeString");
+            getResidentFromDatabase();*/
 
-            Log.d("TAG!", "onCreate: id " + residentId);
-            Log.d("TAG!", "onCreate: street " + streetNameKey);
-            Log.d("TAG!", "onCreate: route " + route);
-
-            getResidentFromDatabase();
+            getResident();
         }
 
-
-       // fillNonRecyclablesList();
     }
 
-    public void getResidentFromDatabase() {
+    private void getResident(){
+
+        resident = MainActivity.route.get(streetNameKey).get(residentId);
+
+        textView.setText("This cart belongs to " + resident.getLastName() + " at " + resident.getStreetNumber() + " " + resident.getStreetName());
+
+    }
+
+   /* public void getResidentFromDatabase() {
 
         database.child(route).child(streetNameKey).child(residentId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -99,9 +101,78 @@ public class IdScannedActivity extends AppCompatActivity {
             }
         });
 
+    }*/
+
+
+    public void Report(View view) {
+
+        String setOut = "1";
+        String correctlyRecycled = "1";
+
+        Boolean isSomethingChecked = false;
+
+        ArrayList<String> nonRecyclables = new ArrayList<>();
+
+        for (CheckBox c : nonRecyclableCheckBoxList) {
+            if (c.isChecked()) {
+                nonRecyclables.add(c.getText().toString());
+            }
+        }
+
+
+        if (correctlyRecycledCheckBox.isChecked()) {
+            correctlyRecycled = "0";
+            isSomethingChecked = true;
+        } else if (cartNotSetOutCheckBox.isChecked()) {
+            setOut = "0";
+            isSomethingChecked = true;
+        } else if (onlyTrashSetOutCheckBox.isChecked()) {
+            setOut = "3";
+            isSomethingChecked = true;
+        }
+
+        if (!isSomethingChecked) {
+            Toast.makeText(this, "Please use the first three checkboxes!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String s : nonRecyclables) {
+            sb.append(s);
+            sb.append(", ");
+        }
+        String nonRecyclablesString = sb.toString();
+
+        String notes = commentTextView.getText().toString() + "  " + nonRecyclablesString;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM", Locale.US);
+        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
+
+        CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, setOut);
+
+        String cartCheckKey = "0";
+        if(resident.getCartChecks() != null) {
+            cartCheckKey = String.valueOf(resident.getCartChecks().size());
+        }
+
+
+
+        try {
+            MainActivity.route.get(streetNameKey).get(residentId).getCartChecks().add(cartCheck);
+            database.child(MainActivity.routeString).child(streetNameKey).child(residentId).child("cartChecks").child(cartCheckKey).setValue(cartCheck);
+            Toast.makeText(getApplicationContext(), "Report successfully added to database!", Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Log.d("Exception", "Report: " + e);
+
+            Toast.makeText(this, "Report failed, please try again!", Toast.LENGTH_SHORT).show();
+        }
+
+        finish();
+
     }
 
-    public void setupCheckBoxList(){
+    public void setupCheckBoxList() {
 
         //Add the three first checkboxes to cartCheckBoxList
         correctlyRecycledCheckBox = findViewById(R.id.correctlyRecycledCheckBox);
@@ -133,35 +204,26 @@ public class IdScannedActivity extends AppCompatActivity {
         CheckBox bigItemCheckBox = findViewById(R.id.bigItemCheckBox);
         nonRecyclableCheckBoxList.add(bigItemCheckBox);
 
+        CheckBox tissuesCheckBox = findViewById(R.id.tissuesCheckBox);
+        nonRecyclableCheckBoxList.add(tissuesCheckBox);
+
+        CheckBox styrofoamCheckBox = findViewById(R.id.styrofoamCheckBox);
+        nonRecyclableCheckBoxList.add(styrofoamCheckBox);
+
+        CheckBox strawsCheckBox = findViewById(R.id.strawsCheckBox);
+        nonRecyclableCheckBoxList.add(strawsCheckBox);
+
         CheckBox recyclablesInTrashCheckBox = findViewById(R.id.recyclablesInTrashCheckBox);
         nonRecyclableCheckBoxList.add(recyclablesInTrashCheckBox);
 
-        /*for (CheckBox c : nonRecyclableCheckBoxList){
-            c.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (view.getTag() != null){
-
-                        for (CheckBox b : nonRecyclableCheckBoxList) {
-                            if (b.getTag() == null) {
-                                b.setChecked(false);
-                            }
-
-                        }
-                    } else {
-                        correctlyRecycledCheckBox.setChecked(false);
-                    }
-                }
-            });
-        }*/
 
         //Makes sure that you can only check one of the cartCheckBoxes at once
-        for (CheckBox c : cartCheckBoxList){
+        for (CheckBox c : cartCheckBoxList) {
             c.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    for (CheckBox b : cartCheckBoxList){
-                        if (b.getId() != view.getId()){
+                    for (CheckBox b : cartCheckBoxList) {
+                        if (b.getId() != view.getId()) {
                             b.setChecked(false);
                         }
                     }
@@ -169,99 +231,6 @@ public class IdScannedActivity extends AppCompatActivity {
             });
         }
     }
-
-   /* public void fillNonRecyclablesList() {
-
-        nonRecyclables = new ArrayList<String>();
-
-        nonRecyclables.add("Bagged recyclables, garbage");
-        nonRecyclables.add("Plastic bag");
-        nonRecyclables.add("Food or liquid");
-        nonRecyclables.add("Clothing or linen");
-        nonRecyclables.add("Tangler");
-        nonRecyclables.add("Big item");
-        nonRecyclables.add("Recyclables in trash");
-
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new NonRecyclablesAdapter(this, mLayoutManager, nonRecyclables).g;
-
-        nonRecyclablesRecyclerView = findViewById(R.id.non_recyclables_recycler_view);
-        nonRecyclablesRecyclerView.setLayoutManager(mLayoutManager);
-        nonRecyclablesRecyclerView.setAdapter(mAdapter);
-
-    }*/
-
-   /* protected void sendEmail(View view) {
-
-        ArrayList<String> emailTo = new ArrayList<>();
-        emailTo.add(resident.getEmail());
-
-        new SendMailTask(IdScannedActivity.this).execute();
-
-    }*/
-
-   public void Report(View view){
-
-       String setOut = "1";
-       String correctlyRecycled = "1";
-
-       Boolean isSomethingChecked = false;
-
-       ArrayList<String> nonRecyclables = new ArrayList<>();
-
-       for (CheckBox c : nonRecyclableCheckBoxList){
-           if (c.isChecked()){
-               nonRecyclables.add(c.getText().toString());
-               isSomethingChecked = true;
-           }
-       }
-
-
-
-       if (correctlyRecycledCheckBox.isChecked()){
-           correctlyRecycled = "0";
-           isSomethingChecked = true;
-       }else if (cartNotSetOutCheckBox.isChecked()){
-           setOut = "0";
-           isSomethingChecked = true;
-       }else if (onlyTrashSetOutCheckBox.isChecked()){
-           setOut = "3";
-           isSomethingChecked = true;
-       }
-
-       if (!isSomethingChecked){
-           Toast.makeText(this,"Please use the checkboxes!", Toast.LENGTH_SHORT).show();
-           return;
-       }
-
-       String nonRecyclablesString = "";
-
-       for(String s : nonRecyclables){
-           nonRecyclablesString += s + ", ";
-       }
-
-       String notes = commentTextView.getText().toString() + "  " + nonRecyclablesString;
-
-       SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM");
-       String strDate = dateFormat.format((Calendar.getInstance().getTime()));
-
-       CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, setOut);
-
-       //resident.addCartCheck(cartCheck);
-
-       try {
-           database.child(route).child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
-           Toast.makeText(this, "Report successfully added to database!", Toast.LENGTH_SHORT).show();
-
-       }catch (Exception e){
-           Log.d("Exception", "Report: " + e);
-
-           Toast.makeText(this, "Report failed, please try again!", Toast.LENGTH_SHORT).show();
-       }
-
-       finish();
-
-   }
 
     public boolean onOptionsItemSelected(final MenuItem item) {
 

@@ -132,6 +132,24 @@
                     android:text="Big item" />
 
                 <CheckBox
+                    android:id="@+id/tissuesCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tissues/napkins/paper towels" />
+
+                <CheckBox
+                    android:id="@+id/styrofoamCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Styrofoam" />
+
+                <CheckBox
+                    android:id="@+id/strawsCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Straws" />
+
+                <CheckBox
                     android:id="@+id/recyclablesInTrashCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

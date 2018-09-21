@@ -1,5 +1,10 @@
 package com.nicklasoxhammar.cartchecking;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Created by Nick on 2018-04-23.
  */
@@ -17,11 +22,12 @@ public class Resident {
     String apartmentNumber;
     String cartOnDifferentStreet;
 
-    //ArrayList<CartCheck> cartChecks;
+    ArrayList<CartCheck> cartChecks;
 
-    public Resident(){}
+    public Resident() {
+    }
 
-    public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet){
+    public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet, ArrayList<CartCheck> cartChecks) {
 
         this.ID = ID;
         //this.firstName = firstName;
@@ -32,7 +38,35 @@ public class Resident {
         this.cartOnDifferentStreet = cartOnDifferentStreet;
         //this.email = email;
         //this.address = address;
-        //this.cartChecks = cartChecks;
+        this.cartChecks = cartChecks;
+    }
+
+    public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet) {
+
+        this.ID = ID;
+        this.lastName = lastName;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.apartmentNumber = apartmentNumber;
+        this.cartOnDifferentStreet = cartOnDifferentStreet;
+
+    }
+
+    public Boolean alreadyChecked() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM", Locale.US);
+        String strDate = dateFormat.format((Calendar.getInstance().getTime()));
+
+        if (cartChecks != null) {
+            for (CartCheck c : cartChecks) {
+
+                if (c != null && c.getDate().equals(strDate)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
     }
 
     /*public Resident(String firstName, String lastName, ResidentAddress address, ArrayList<CartCheck> cartChecks){
@@ -81,9 +115,9 @@ public class Resident {
         return streetNumber;
     }
 
-    public int getStreetNumberInt(){
+    public int getStreetNumberInt() {
 
-        String streetNumberOnlyDigits = streetNumber.replaceAll("[^\\d]", "" );
+        String streetNumberOnlyDigits = streetNumber.replaceAll("[^\\d]", "");
 
         int streetNumberInt = Integer.parseInt(streetNumberOnlyDigits);
 
@@ -121,7 +155,7 @@ public class Resident {
     }*/
 
 
-   /*public ArrayList<CartCheck> getCartChecks() {
+    public ArrayList<CartCheck> getCartChecks() {
         return cartChecks;
     }
 
@@ -129,11 +163,11 @@ public class Resident {
         this.cartChecks = cartChecks;
     }
 
-    public void addCartCheck(CartCheck cartCheck){
+    /*public void addCartCheck(CartCheck cartCheck){
         cartChecks.add(cartCheck);
-    }
+    }*/
 
-    public String getEmail() {
+    /*public String getEmail() {
         return email;
     }
 
