@@ -29,13 +29,13 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
 // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder  {
 
-        protected TextView street;
+        protected TextView routeName;
         protected View cardView;
 
         public ViewHolder(View v) {
             super(v);
 
-            street = v.findViewById(R.id.street_name_card_text);
+            routeName = v.findViewById(R.id.street_name_card_text);
             cardView = v.findViewById(R.id.card_view_street);
 
         }
@@ -67,13 +67,13 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
-        holder.street.setText(routes.get(position));
+        holder.routeName.setText(routes.get(position));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mContext instanceof MainActivity){
-                    ((MainActivity)mContext).setRoute(holder.street.getText().toString());
+                    ((MainActivity)mContext).setRoute(holder.routeName.getText().toString());
                     ((MainActivity)mContext).closePopup();
                 }
             }

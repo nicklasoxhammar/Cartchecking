@@ -1,8 +1,10 @@
 package com.nicklasoxhammar.cartchecking;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -22,12 +24,14 @@ public class Resident {
     String apartmentNumber;
     String cartOnDifferentStreet;
 
-    ArrayList<CartCheck> cartChecks;
+    public boolean alreadyChecked = false;
+
+    //HashMap<String, CartCheck> cartChecks;
 
     public Resident() {
     }
 
-    public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet, ArrayList<CartCheck> cartChecks) {
+    /*public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet, HashMap<String, CartCheck> cartChecks) {
 
         this.ID = ID;
         //this.firstName = firstName;
@@ -39,7 +43,7 @@ public class Resident {
         //this.email = email;
         //this.address = address;
         this.cartChecks = cartChecks;
-    }
+    }*/
 
     public Resident(String ID, String lastName, String streetName, String streetNumber, String apartmentNumber, String cartOnDifferentStreet) {
 
@@ -52,11 +56,11 @@ public class Resident {
 
     }
 
-    public Boolean alreadyChecked() {
+     /*public Boolean alreadyChecked() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM", Locale.US);
         String strDate = dateFormat.format((Calendar.getInstance().getTime()));
 
-        if (cartChecks != null) {
+       if (cartChecks != null) {
             for (CartCheck c : cartChecks) {
 
                 if (c != null && c.getDate().equals(strDate)) {
@@ -65,9 +69,10 @@ public class Resident {
             }
         }
 
-        return false;
 
-    }
+
+        return false;
+    }*/
 
     /*public Resident(String firstName, String lastName, ResidentAddress address, ArrayList<CartCheck> cartChecks){
 
@@ -155,11 +160,11 @@ public class Resident {
     }*/
 
 
-    public ArrayList<CartCheck> getCartChecks() {
+    /*public HashMap<String, CartCheck> getCartChecks() {
         return cartChecks;
     }
 
-    public void setCartChecks(ArrayList<CartCheck> cartChecks) {
+    public void setCartChecks(HashMap<String, CartCheck> cartChecks) {
         this.cartChecks = cartChecks;
     }
 

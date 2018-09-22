@@ -119,20 +119,14 @@ public class MainActivity extends AppCompatActivity {
 
         streetNameAutoCompleteTextView = findViewById(R.id.autoCompleteStreetTextView);
 
-        checkNetworkConnection();
-
         mAuth = FirebaseAuth.getInstance();
 
         currentUser = mAuth.getCurrentUser();
-        /*TextView textView = findViewById(R.id.userTextView);
-        textView.setText("You are signed in on: " + currentUser.getEmail());*/
-
 
         database = FirebaseDatabase.getInstance().getReference();
 
         residents = new ArrayList<>();
 
-        //setupStreetsRecyclerView();
 
         makeActionOverflowMenuShown();
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -141,29 +135,27 @@ public class MainActivity extends AppCompatActivity {
         //get routes and open choose routeString window
         getRoutesFromDatabase();
 
-
     }
+
 
     public void setRoute(final String rString) {
         routeString = rString;
         toolbar.setTitle(routeString);
-
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    route = new HashMap<>();
-
                     if (snapshot.getKey().equals(routeString)) {
+                        route = new HashMap<>();
 
-                        for(DataSnapshot ds : snapshot.getChildren()){
+                        for (DataSnapshot ds : snapshot.getChildren()) {
 
                             route.put(ds.getKey(), new HashMap<String, Resident>());
-
-                            for(DataSnapshot s : ds.getChildren()){
+                            for (DataSnapshot s : ds.getChildren()) {
                                 route.get(ds.getKey()).put(s.getKey(), s.getValue(Resident.class));
                             }
+
                         }
 
                         Toast.makeText(getApplicationContext(), "Route chosen, you can now go offline!", Toast.LENGTH_SHORT).show();
@@ -441,7 +433,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void getResidentsByStreetName() {
 
-        residents = new ArrayList<>(route.get(streetName).values());
+
+        System.out.println(streetName);
+        if (route.get(streetName) != null) {
+            residents = new ArrayList<>(route.get(streetName).values());
+        }
 
         showStreetNamePopup();
 
@@ -718,22 +714,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    void checkNetworkConnection() {
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-
-        } else {
-
-            Toast.makeText(this, "You do not seem to have a network connection!", Toast.LENGTH_LONG).show();
-
-        }
-
-
-    }
-
 
 }

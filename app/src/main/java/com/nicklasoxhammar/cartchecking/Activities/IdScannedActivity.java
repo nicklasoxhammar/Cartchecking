@@ -76,7 +76,7 @@ public class IdScannedActivity extends AppCompatActivity {
 
     }
 
-    private void getResident(){
+    private void getResident() {
 
         resident = MainActivity.route.get(streetNameKey).get(residentId);
 
@@ -150,17 +150,11 @@ public class IdScannedActivity extends AppCompatActivity {
 
         CartCheck cartCheck = new CartCheck(strDate, notes, correctlyRecycled, setOut);
 
-        String cartCheckKey = "0";
-        if(resident.getCartChecks() != null) {
-            cartCheckKey = String.valueOf(resident.getCartChecks().size());
-        }
-
-
 
         try {
-            MainActivity.route.get(streetNameKey).get(residentId).getCartChecks().add(cartCheck);
-            database.child(MainActivity.routeString).child(streetNameKey).child(residentId).child("cartChecks").child(cartCheckKey).setValue(cartCheck);
-            Toast.makeText(getApplicationContext(), "Report successfully added to database!", Toast.LENGTH_SHORT).show();
+            MainActivity.route.get(streetNameKey).get(residentId).alreadyChecked = true;
+            database.child(MainActivity.routeString).child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
+            Toast.makeText(getBaseContext(), "Report successful, it will be added to database when you have an internet connection!", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             Log.d("Exception", "Report: " + e);

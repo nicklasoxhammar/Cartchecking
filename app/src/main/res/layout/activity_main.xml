@@ -15,7 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        app:title="No routeString"
+        app:title="No route"
         app:titleTextColor="@color/colorWhite"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>

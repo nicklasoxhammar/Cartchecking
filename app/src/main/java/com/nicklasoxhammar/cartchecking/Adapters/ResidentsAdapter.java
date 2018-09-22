@@ -104,7 +104,7 @@ public class ResidentsAdapter extends RecyclerView.Adapter<ResidentsAdapter.View
         }
         holder.name.setText(r.getLastName());
 
-        if (r.alreadyChecked()) {
+        if (r.alreadyChecked) {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.colorLightGreen));
         } else {
             holder.cardView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
