@@ -7,8 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,19 +41,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.nicklasoxhammar.cartchecking.Adapters.ResidentsAdapter;
 import com.nicklasoxhammar.cartchecking.Adapters.RoutesAdapter;
 import com.nicklasoxhammar.cartchecking.Adapters.StreetsAdapter;
-import com.nicklasoxhammar.cartchecking.CartCheck;
 import com.nicklasoxhammar.cartchecking.R;
 import com.nicklasoxhammar.cartchecking.Resident;
-import com.nicklasoxhammar.cartchecking.Street;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     String qrString;
+
+    public static ResidentsAdapter residentsAdapter;
 
     RecyclerView streetsRecyclerView;
 
@@ -491,13 +486,12 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayoutManager mLayoutManager;
         RecyclerView residentsRecyclerView;
-        ResidentsAdapter mAdapter;
 
         mLayoutManager = new LinearLayoutManager(this);
         residentsRecyclerView = layout.findViewById(R.id.popupRecyclerView);
         residentsRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
-        residentsRecyclerView.setAdapter(mAdapter);
+        residentsAdapter = new ResidentsAdapter(this, mLayoutManager, residents);
+        residentsRecyclerView.setAdapter(residentsAdapter);
 
         //showProgress(false);
     }
@@ -691,12 +685,12 @@ public class MainActivity extends AppCompatActivity {
 
                 streetsRecyclerView = findViewById(R.id.streetsRecyclerView);
                 LinearLayoutManager mLayoutManager;
-                StreetsAdapter mAdapter;
+                StreetsAdapter residentsAdapter;
 
                 mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 streetsRecyclerView.setLayoutManager(mLayoutManager);
-                mAdapter = new StreetsAdapter(getApplicationContext(), mLayoutManager, streets);
-                streetsRecyclerView.setAdapter(mAdapter);
+                residentsAdapter = new StreetsAdapter(getApplicationContext(), mLayoutManager, streets);
+                streetsRecyclerView.setAdapter(residentsAdapter);
 
 
                 //Add streets to autocomplete textview

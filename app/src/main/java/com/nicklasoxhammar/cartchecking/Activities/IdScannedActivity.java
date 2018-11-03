@@ -153,6 +153,7 @@ public class IdScannedActivity extends AppCompatActivity {
 
         try {
             MainActivity.route.get(streetNameKey).get(residentId).alreadyChecked = true;
+            MainActivity.residentsAdapter.notifyDataSetChanged();
             database.child(MainActivity.routeString).child(streetNameKey).child(residentId).child("cartChecks").push().setValue(cartCheck);
             Toast.makeText(getBaseContext(), "Report successful, it will be added to database when you have an internet connection!", Toast.LENGTH_SHORT).show();
 
@@ -206,6 +207,9 @@ public class IdScannedActivity extends AppCompatActivity {
 
         CheckBox strawsCheckBox = findViewById(R.id.strawsCheckBox);
         nonRecyclableCheckBoxList.add(strawsCheckBox);
+
+        CheckBox cleanButCheckBox = findViewById(R.id.cleanButCheckBox);
+        nonRecyclableCheckBoxList.add(cleanButCheckBox);
 
         CheckBox recyclablesInTrashCheckBox = findViewById(R.id.recyclablesInTrashCheckBox);
         nonRecyclableCheckBoxList.add(recyclablesInTrashCheckBox);

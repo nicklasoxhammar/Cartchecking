@@ -150,11 +150,17 @@
                     android:text="Straws" />
 
                 <CheckBox
+                    android:id="@+id/cleanButCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clean but precious little recycling" />
+
+                <CheckBox
                     android:id="@+id/recyclablesInTrashCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Recyclables in trash cart"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="50dp"/>
 
             </TableLayout>
         </ScrollView>
